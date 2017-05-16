@@ -21,7 +21,7 @@ var S2Metric = (function () {
     /** Return the value of a metric for cells at the given level. */
     S2Metric.prototype.getValue = function (level) {
         var scaleFactor = this._dim * (1 - level);
-        return this._deriv.toNumber() * Math.pow(scaleFactor, 2);
+        return this._deriv.toNumber() * Math.pow(2, scaleFactor);
         // return StrictMath.scalb(deriv, dim * (1 - level));
     };
     /**

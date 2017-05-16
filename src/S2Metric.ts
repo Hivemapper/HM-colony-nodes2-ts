@@ -27,7 +27,7 @@ export class S2Metric {
     /** Return the value of a metric for cells at the given level. */
     public getValue(level:number):number {
         let scaleFactor = this._dim * (1 - level);
-        return this._deriv.toNumber() * Math.pow(scaleFactor, 2);
+        return this._deriv.toNumber() * Math.pow(2, scaleFactor);
         // return StrictMath.scalb(deriv, dim * (1 - level));
     }
 
