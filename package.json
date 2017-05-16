@@ -21,7 +21,7 @@
     "prepublish": "shx rm -rf ./dist/ && npm run build",
     "clean": "shx rm -rf ./dist",
     "build": "tsc -d",
-    "postinstall": "npm run prepublish"
+    "//postinstall": "npm run prepublish"
   },
   "typings": "./dist/export.d.ts",
   "author": {
