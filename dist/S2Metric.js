@@ -20,9 +20,8 @@ var S2Metric = (function () {
     };
     /** Return the value of a metric for cells at the given level. */
     S2Metric.prototype.getValue = function (level) {
-        var scaleFactor = this._dim * (1 - level);
-        return this._deriv.toNumber() * Math.pow(2, scaleFactor);
-        // return StrictMath.scalb(deriv, dim * (1 - level));
+        var scaleFactor = this.dim() * (1 - level);
+        return this.deriv().toNumber() * Math.pow(2, scaleFactor);
     };
     /**
      * Return the level at which the metric has approximately the given value.
