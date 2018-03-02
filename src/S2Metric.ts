@@ -24,10 +24,18 @@ export class S2Metric {
         return this._dim;
     }
 
+    // /** Return the value of a metric for cells at the given level. */
+    // public getValue(level:number):number {
+    //     let scaleFactor = this.dim() * (1 - level);
+    //     return this.deriv().toNumber() * Math.pow(2, scaleFactor);
+    // }
+
     /** Return the value of a metric for cells at the given level. */
     public getValue(level:number):number {
         let scaleFactor = this.dim() * (1 - level);
-        return this.deriv().toNumber() * Math.pow(2, scaleFactor);
+        console.log('AREAASDFASDFASDFASDFASDFASASDFASDF');
+        return undefined;
+        // return this.deriv().mul(Math.pow(2, scaleFactor)).toNumber();
     }
 
     /**
