@@ -15,7 +15,7 @@
  */
 
 import {R2Vector} from "./R2Vector";
-import Decimal = require('decimal.js') ;
+import * as decimal from 'decimal.js';
 import {S2} from "./S2";
 
 ///re
@@ -30,9 +30,9 @@ export class S2Point {
   public y: decimal.Decimal;
   public z: decimal.Decimal;
   constructor(x:decimal.Decimal|number|string, y:decimal.Decimal|number|string, z:decimal.Decimal|number|string) {
-    this.x = new Decimal(x)  as decimal.Decimal;
-    this.y = new Decimal(y)  as decimal.Decimal ;
-    this.z = new Decimal(z)   as decimal.Decimal;
+    this.x = new decimal.Decimal(x)  as decimal.Decimal;
+    this.y = new decimal.Decimal(y)  as decimal.Decimal ;
+    this.z = new decimal.Decimal(z)  as decimal.Decimal;
     // this.y = typeof(y) === 'number'?new decimal.Decimal(y):y as decimal.Decimal;
     // this.z = typeof(z) === 'number'?new decimal.Decimal(z):z as decimal.Decimal;
   }
@@ -78,7 +78,7 @@ export class S2Point {
   }
 
   public static mul(p, m:decimal.Decimal|number):S2Point {
-    let mD = new Decimal(m) as decimal.Decimal;
+    let mD = new decimal.Decimal(m) as decimal.Decimal;
     return new S2Point(mD.times(p.x), mD.times(p.y) , mD.times(p.z));
   }
 
@@ -138,7 +138,7 @@ export class S2Point {
   /** Return the angle between two vectors in radians */
   public angle(va) {
 
-    return Decimal.atan2(S2Point.crossProd(this, va).norm(), this.dotProd(va)
+    return decimal.Decimal.atan2(S2Point.crossProd(this, va).norm(), this.dotProd(va)
     );
   }
 

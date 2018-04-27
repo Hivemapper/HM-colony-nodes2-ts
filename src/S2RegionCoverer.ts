@@ -19,7 +19,7 @@ import {S2Region} from "./S2Region";
 import {S2CellId} from "./S2CellId";
 import {S2CellUnion} from "./S2CellUnion";
 import {S2Projections} from "./S2Projections";
-import {Decimal} from './decimal';
+import {Decimal} from 'decimal.js';
 /**
  * An S2RegionCoverer is a class that allows arbitrary regions to be
  * approximated as unions of cells (S2CellUnion). This is useful for

@@ -1,4 +1,5 @@
 import {S2} from "./S2";
+import * as decimal from 'decimal.js';
 export abstract class Interval {
   public lo:decimal.Decimal;
   public hi:decimal.Decimal;

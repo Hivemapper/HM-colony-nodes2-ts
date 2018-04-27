@@ -24,8 +24,8 @@ import {S2LatLng} from "./S2LatLng";
 import {R1Interval} from "./R1Interval";
 import {S1Interval} from "./S1Interval";
 import {S2Cell} from "./S2Cell";
-import Long = require('long');
-import {Decimal} from './decimal';
+import Long from 'long';
+import * as decimal from 'decimal.js';
 /**
  * This class represents a spherical cap, i.e. a portion of a sphere cut off by
  * a plane. The cap is defined by its axis and height. This representation has
@@ -105,7 +105,7 @@ export class S2Cap implements S2Region {
   }
 
   public area():decimal.Decimal {
-    return Decimal.max(
+    return decimal.Decimal.max(
         0,
         this.height
     )
@@ -126,7 +126,7 @@ export class S2Cap implements S2Region {
       return new S1Angle(-1);
     }
     return new S1Angle(
-        Decimal.asin(
+        decimal.Decimal.asin(
             this.height.times(0.5).sqrt()
         )
             .times(2)
@@ -160,7 +160,7 @@ export class S2Cap implements S2Region {
   public complement():S2Cap {
     // The complement of a full cap is an empty cap, not a singleton.
     // Also make sure that the complement of an empty cap has height 2.
-    let cHeight = this.isFull() ? -1 : Decimal.max(this.height, 0).neg().plus(2);
+    let cHeight = this.isFull() ? -1 : decimal.Decimal.max(this.height, 0).neg().plus(2);
     return new S2Cap(S2Point.neg(this.axis), cHeight);
   }
 
@@ -211,7 +211,7 @@ export class S2Cap implements S2Region {
       // we need to round up the distance calculation. That is, after
       // calling cap.AddPoint(p), cap.Contains(p) should be true.
       let dist2 = S2Point.sub(this.axis, p).norm2();
-      let newHeight = Decimal.max(this.height, S2Cap.ROUND_UP.times(0.5).times(dist2));
+      let newHeight = decimal.Decimal.max(this.height, S2Cap.ROUND_UP.times(0.5).times(dist2));
       return new S2Cap(this.axis, newHeight);
     }
   }
@@ -230,7 +230,7 @@ export class S2Cap implements S2Region {
         return new S2Cap(this.axis, 2); //Full cap
       } else {
         let d = angle.times(0.5).sin();
-        let newHeight = Decimal.max(this.height, S2Cap.ROUND_UP.times(2).times(d.pow(2)));
+        let newHeight = decimal.Decimal.max(this.height, S2Cap.ROUND_UP.times(2).times(d.pow(2)));
         return new S2Cap(this.axis, newHeight);
       }
     }
@@ -283,7 +283,7 @@ export class S2Cap implements S2Region {
       const sinA = this.height.times(this.height.neg().plus(2)).sqrt();
       const sinC = axisLatLng.latRadians.cos();
       if (sinA.lte(sinC)) {
-        const angleA = Decimal.asin(sinA.dividedBy(sinC));
+        const angleA = decimal.Decimal.asin(sinA.dividedBy(sinC));
         lng[0] = S2.IEEEremainder(axisLatLng.lngRadians.minus(angleA),
             2 * S2.M_PI);
         lng[1] = S2.IEEEremainder(axisLatLng.lngRadians.plus(angleA),

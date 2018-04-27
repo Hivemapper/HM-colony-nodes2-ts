@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "target":                 "es5",
-    "module":                 "commonjs",
+    "target":                 "ES2015",
     "emitDecoratorMetadata":  true,
     "experimentalDecorators": true,
     "outDir":                 "dist",
     "sourceMap":              true,
-    "moduleResolution":       "node"
+    "moduleResolution":       "node",
+    "declaration": true
   },
   "files":           [
     "src/export.ts"

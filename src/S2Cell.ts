@@ -1,5 +1,5 @@
-import Long = require('long');
-import {Decimal} from './decimal';
+import Long from 'long';
+import * as decimal from 'decimal.js';
 import {S2CellId} from "./S2CellId";
 import {S2Point} from "./S2Point";
 import {S2LatLng} from "./S2LatLng";
@@ -232,7 +232,7 @@ export class S2Cell {
     return flatArea
         .times(2)
         .dividedBy(
-            Decimal.min(
+            decimal.Decimal.min(
                 flatArea.times(S2.M_1_PI),
                 1
             )
@@ -291,7 +291,7 @@ export class S2Cell {
 // poles extend down to +/-35.26 degrees at their vertices.
 // adding kMaxError (as opposed to the C version) because of asin and atan2
 // roundoff errors
-  private static POLE_MIN_LAT = Decimal.asin(S2.toDecimal(1.0).dividedBy(3).sqrt()).minus(S2Cell.MAX_ERROR)
+  private static POLE_MIN_LAT = decimal.Decimal.asin(S2.toDecimal(1.0).dividedBy(3).sqrt()).minus(S2Cell.MAX_ERROR)
 // 35.26 degrees
 
 
@@ -405,7 +405,7 @@ export class S2Cell {
   private getLatitude(i:number, j:number):decimal.Decimal {
 
     const p = S2Projections.faceUvToXyz(this.face, this._uv[0][i], this._uv[1][j]);
-    return Decimal.atan2(
+    return decimal.Decimal.atan2(
         p.z,
         p.x.pow(2).plus(p.y.pow(2))
             .sqrt()
@@ -415,7 +415,7 @@ export class S2Cell {
 
   private getLongitude(i:number, j:number):decimal.Decimal {
     const p = S2Projections.faceUvToXyz(this.face, this._uv[0][i], this._uv[1][j]);
-    return Decimal.atan2(
+    return decimal.Decimal.atan2(
         p.y,
         p.x
     );

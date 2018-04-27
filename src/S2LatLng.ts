@@ -17,7 +17,7 @@
 import {S1Angle} from "./S1Angle";
 import {S2Point} from "./S2Point";
 import {S2} from "./S2";
-import {Decimal} from './decimal';
+import * as decimal from 'decimal.js';
 /**
  * This class represents a point on the unit sphere as a pair of
  * latitude-longitude coordinates. Like the rest of the "geometry" package, the
@@ -44,11 +44,11 @@ export class S2LatLng {
     this.lngRadians = S2.toDecimal(lngRadians);
   }
 
-  get latDegrees() {
+  get latDegrees():decimal.Decimal {
     return new S1Angle(this.latRadians).degrees();
   }
 
-  get lngDegrees() {
+  get lngDegrees():decimal.Decimal {
     return new S1Angle(this.lngRadians).degrees();
   }
 
@@ -59,12 +59,12 @@ export class S2LatLng {
   public  toPoint():S2Point {
     const phi = this.latRadians;
     const theta = this.lngRadians;
-    const cosphi = Decimal.cos(phi);
+    const cosphi = decimal.Decimal.cos(phi);
 
     return new S2Point(
-        Decimal.cos(theta).times(cosphi),
-        Decimal.sin(theta).times(cosphi),
-        Decimal.sin(phi));
+        decimal.Decimal.cos(theta).times(cosphi),
+        decimal.Decimal.sin(theta).times(cosphi),
+        decimal.Decimal.sin(phi));
   }
 
   /**
@@ -81,9 +81,9 @@ export class S2LatLng {
     // drem(x, 2 * S2.M_PI) reduces its argument to the range
     // [-S2.M_PI, S2.M_PI] inclusive, which is what we want here.
     return new S2LatLng(
-        Decimal.max(
+        decimal.Decimal.max(
             -S2.M_PI_2,
-            Decimal.min(
+            decimal.Decimal.min(
                 S2.M_PI_2,
                 this.latRadians
             )
@@ -132,7 +132,7 @@ export class S2LatLng {
     // We use atan2 rather than asin because the input vector is not necessarily
     // unit length, and atan2 is much more accurate than asin near the poles.
     return new S1Angle(
-        Decimal.atan2(
+        decimal.Decimal.atan2(
             p.z,
             p.x.pow(2)
                 .plus(p.y.pow(2))
@@ -144,7 +144,7 @@ export class S2LatLng {
 
   public static longitude(p:S2Point):S1Angle {
     // Note that atan2(0, 0) is defined to be zero.
-    return new S1Angle(Decimal.atan2(p.y, p.x));
+    return new S1Angle(decimal.Decimal.atan2(p.y, p.x));
   }
 
   equals(other:S2LatLng):boolean {
@@ -166,7 +166,7 @@ export class S2LatLng {
         ).asin();
     const newLng = this.lngRadians
         .plus(
-            Decimal.atan2(
+            decimal.Decimal.atan2(
                 bearingRadians.sin()
                     .times(distanceToRadius.sin())
                     .times(this.latRadians.cos()),
@@ -222,9 +222,9 @@ export class S2LatLng {
     return new S1Angle(
         (S2.toDecimal(2) as decimal.Decimal)
             .times(
-                Decimal.atan2(
+                decimal.Decimal.atan2(
                     x.sqrt(),
-                    Decimal.max(
+                    decimal.Decimal.max(
                         0,
                         x.neg().plus(1)
                     )

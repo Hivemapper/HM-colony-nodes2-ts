@@ -1,5 +1,5 @@
 import {S2} from "./S2";
-import {Decimal} from './decimal';
+import * as decimal from 'decimal.js';
 
 /**
  * Defines an area or a length cell metric.

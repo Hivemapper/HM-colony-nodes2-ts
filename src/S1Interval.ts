@@ -1,5 +1,6 @@
 import {Interval} from "./Interval";
 import {S2} from "./S2";
+import * as decimal from 'decimal.js';
 export class S1Interval extends Interval {
 
   constructor(lo:number|decimal.Decimal, hi:number|decimal.Decimal, checked:boolean = false) {

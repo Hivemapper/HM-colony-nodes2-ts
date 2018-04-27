@@ -69,6 +69,7 @@
 import {S2, S2Metric} from "./S2";
 import {S2Point} from "./S2Point";
 import {R2Vector} from "./R2Vector";
+import * as decimal from 'decimal.js';
 export enum Projections { 
   S2_LINEAR_PROJECTION, S2_TAN_PROJECTION, S2_QUADRATIC_PROJECTION
 }

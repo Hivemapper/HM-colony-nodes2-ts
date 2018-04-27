@@ -1,8 +1,7 @@
 import {S2Point} from "./S2Point";
-import {Decimal} from './decimal';
+import * as decimal from 'decimal.js';
 import {S2Metric} from "./S2Metric";
-
-const Long = require('long');
+import Long from 'long';
 
 export class S2 {
 
@@ -165,7 +164,7 @@ export class S2 {
       // Consider whether Girard's formula might be more accurate.
       const s2 = s.pow(2);
       const dmin = s.minus(
-          Decimal.max(
+          decimal.Decimal.max(
               sa,
               sb,
               sc
@@ -182,14 +181,14 @@ export class S2 {
     // Use l'Huilier's formula.
     return S2.toDecimal(4)
         .times(
-            Decimal.atan(
-                Decimal.sqrt(
-                    Decimal.max(
+            decimal.Decimal.atan(
+                decimal.Decimal.sqrt(
+                    decimal.Decimal.max(
                         0.0,
-                        Decimal.tan(s.times(0.5))
-                            .times(Decimal.tan(s.minus(sa).times(0.5)))
-                            .times(Decimal.tan(s.minus(sb).times(0.5)))
-                            .times(Decimal.tan(s.minus(sc).times(0.5)))
+                        decimal.Decimal.tan(s.times(0.5))
+                            .times(decimal.Decimal.tan(s.minus(sa).times(0.5)))
+                            .times(decimal.Decimal.tan(s.minus(sb).times(0.5)))
+                            .times(decimal.Decimal.tan(s.minus(sc).times(0.5)))
                     )
                 )
             )
@@ -210,7 +209,7 @@ export class S2 {
     const ab = S2Point.crossProd(a, b);
     const bc = S2Point.crossProd(b, c);
     const ac = S2Point.crossProd(a, c);
-    return Decimal.max(
+    return decimal.Decimal.max(
         0,
         ab.angle(ac)
             .minus(ab.angle(bc))
@@ -220,7 +219,7 @@ export class S2 {
 
   public static toDecimal(value:number|decimal.Decimal|string):decimal.Decimal {
     if (typeof(value) === 'number' || typeof(value) === 'string') {
-      return new Decimal(value) as decimal.Decimal
+      return new decimal.Decimal(value) as decimal.Decimal
     }
     return value as decimal.Decimal;
   }

@@ -1,6 +1,6 @@
 import {Interval} from "./Interval";
 import {S2} from "./S2";
-import {Decimal} from './decimal';
+import * as decimal from 'decimal.js';
 
 /**
  * An R1Interval represents a closed interval on a unit circle (also known as a
@@ -131,8 +131,8 @@ export class R1Interval extends Interval {
       return this;
     }
     return new R1Interval(
-        Decimal.min(this.lo, y.lo),
-        Decimal.max(this.hi, y.hi)
+        decimal.Decimal.min(this.lo, y.lo),
+        decimal.Decimal.max(this.hi, y.hi)
     );
   }
 
@@ -142,8 +142,8 @@ export class R1Interval extends Interval {
    */
   public intersection(y:R1Interval):R1Interval {
     return new R1Interval(
-        Decimal.max(this.lo, y.lo),
-        Decimal.min(this.hi, y.hi)
+        decimal.Decimal.max(this.lo, y.lo),
+        decimal.Decimal.min(this.hi, y.hi)
     );
   }
 

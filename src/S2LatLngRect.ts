@@ -8,7 +8,7 @@ import {S1Angle} from "./S1Angle";
 import {S2Cell} from "./S2Cell";
 import {S2EdgeUtil} from "./S2EdgeUtil";
 import {S2Cap} from "./S2Cap";
-import {Decimal} from './decimal';
+import * as decimal from 'decimal.js';
 export class S2LatLngRect implements S2Region {
   constructor(public lat:R1Interval, public lng:S1Interval) {
 
@@ -97,7 +97,7 @@ export class S2LatLngRect implements S2Region {
     }
     // Minimum/maximum latitude occurs in the edge interior. This affects the
     // latitude bounds but not the longitude bounds.
-    const absLat = Decimal.acos(ab.z.dividedBy(ab.norm()).abs());
+    const absLat = decimal.Decimal.acos(ab.z.dividedBy(ab.norm()).abs());
     if (da.lt(0)) {
       return new S2LatLngRect(new R1Interval(r.lat.lo, absLat), r.lng);
     } else {
@@ -191,9 +191,9 @@ export class S2LatLngRect implements S2Region {
 
     if (a.lng.contains(p.lngRadians)) {
       return new S1Angle(
-          Decimal.max(
+          decimal.Decimal.max(
               0.0,
-              Decimal.max(
+              decimal.Decimal.max(
                   p.latRadians.minus(a.lat.hi),
                   a.lat.lo.minus(p.latRadians)
               )
@@ -514,7 +514,7 @@ export class S2LatLngRect implements S2Region {
     // This is the size difference of the two spherical caps, multiplied by
     // the longitude ratio.
     //TODO: check if this.lat.hi & this.lat.lo is radians. 
-    return this.lng.getLength().times(Decimal.sin(this.lat.hi).minus(Decimal.sin(this.lat.lo)).abs());
+    return this.lng.getLength().times(decimal.Decimal.sin(this.lat.hi).minus(decimal.Decimal.sin(this.lat.lo)).abs());
   }
 
   /** Return true if two rectangles contains the same set of points. */
@@ -653,14 +653,14 @@ export class S2LatLngRect implements S2Region {
 
     // Compute the angle "theta" from the x-axis (in the x-y plane defined
     // above) where the great circle intersects the given line of latitude.
-    let sinLat = Decimal.sin(lat);
+    let sinLat = decimal.Decimal.sin(lat);
     if (sinLat.abs().gte(x.z)) {
       return false; // The great circle does not reach the given latitude.
     }
     // assert (x.z > 0);
     const cosTheta = sinLat.dividedBy(x.z);
     const sinTheta = cosTheta.pow(2).neg().plus(1).sqrt(); // Math.sqrt(1 - cosTheta * cosTheta);
-    const theta = Decimal.atan2(sinTheta, cosTheta);
+    const theta = decimal.Decimal.atan2(sinTheta, cosTheta);
     // Math.atan2(sinTheta, cosTheta);
 
     // The candidate intersection points are located +/- theta in the x-y
@@ -669,21 +669,21 @@ export class S2LatLngRect implements S2Region {
     // also that it is contained within the given longitude interval "lng".
 
     // Compute the range of theta values spanned by the edge AB.
-    const abTheta = S1Interval.fromPointPair(Decimal.atan2(
-        a.dotProd(y), a.dotProd(x)), Decimal.atan2(b.dotProd(y), b.dotProd(x)));
+    const abTheta = S1Interval.fromPointPair(decimal.Decimal.atan2(
+        a.dotProd(y), a.dotProd(x)), decimal.Decimal.atan2(b.dotProd(y), b.dotProd(x)));
 
     if (abTheta.contains(theta)) {
       // Check if the intersection point is also in the given "lng" interval.
       const isect = S2Point.add(S2Point.mul(x, cosTheta), S2Point.mul(y,
           sinTheta));
-      if (lng.contains(Decimal.atan2(isect.y, isect.x))) {
+      if (lng.contains(decimal.Decimal.atan2(isect.y, isect.x))) {
         return true;
       }
     }
     if (abTheta.contains(theta.neg())) {
       // Check if the intersection point is also in the given "lng" interval.
       const intersection = S2Point.sub(S2Point.mul(x, cosTheta), S2Point.mul(y, sinTheta));
-      if (lng.contains(Decimal.atan2(intersection.y, intersection.x))) {
+      if (lng.contains(decimal.Decimal.atan2(intersection.y, intersection.x))) {
         return true;
       }
     }

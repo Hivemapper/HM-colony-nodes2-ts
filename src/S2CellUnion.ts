@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as Long from 'long';
+import Long from 'long';
 import {S2Region} from "./S2Region";
 import {S2CellId} from "./S2CellId";
 import {S2Cell} from "./S2Cell";
@@ -23,6 +23,7 @@ import {S2LatLngRect} from "./S2LatLngRect";
 import {S2Point} from "./S2Point";
 import {S2} from "./S2";
 import {S2Cap} from "./S2Cap";
+import * as decimal from 'decimal.js';
 
 /**
  * An S2CellUnion is a region consisting of cells of various sizes. Typically a

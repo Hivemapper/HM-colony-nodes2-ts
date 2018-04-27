@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-//const Long = require("long");
-import * as Long from 'long';
+import Long from 'long';
 import {S2Point} from "./S2Point";
 import {R2Vector} from "./R2Vector";
 import {S2} from "./S2";
 import {MutableInteger} from "./MutableInteger";
 import {S2LatLng} from "./S2LatLng";
-import {Decimal} from './decimal';
+import * as decimal from 'decimal.js';
 
 let parseHex = function parseHex(str) {
   return Long.fromString(str, false, 16);
@@ -930,11 +929,11 @@ public  getVertexNeighbors(level:number):S2CellId[] {
     // Rounding to the nearest integer using FastIntRound() is much faster.
     let s = S2.toDecimal(_s);
     let m = S2.toDecimal(S2CellId.MAX_SIZE).dividedBy(2); // scaling multiplier
-    return Decimal.max(
+    return decimal.Decimal.max(
         0,
-        Decimal.min(
+        decimal.Decimal.min(
             m.times(2).minus(1),
-            Decimal.round(
+            decimal.Decimal.round(
                 m.times(s).plus(
                     m.minus(0.5)
                 )

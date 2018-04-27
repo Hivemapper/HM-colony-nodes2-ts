@@ -1,5 +1,5 @@
 import {S2Point} from "./S2Point";
-import {Decimal} from './decimal';
+import * as decimal from 'decimal.js';
 import {S2} from "./S2";
 
 /**
@@ -12,8 +12,8 @@ export class R2Vector {
   private _x: decimal.Decimal;
   private _y: decimal.Decimal;
   constructor(_x:number|decimal.Decimal, _y:number|decimal.Decimal) {
-    this._x = new Decimal(_x) as decimal.Decimal;
-    this._y = new Decimal(_y) as decimal.Decimal;
+    this._x = new decimal.Decimal(_x) as decimal.Decimal;
+    this._y = new decimal.Decimal(_y) as decimal.Decimal;
     // this._x = new Decimal(_x) as decimal.Decimal;
     // this._y = new Decimal(_y) as decimal.Decimal;
   }
@@ -42,7 +42,7 @@ export class R2Vector {
   }
 
   public static mul(p:R2Vector, _m:number|decimal.Decimal):R2Vector {
-    const m:decimal.Decimal = new Decimal(_m) as decimal.Decimal;
+    const m:decimal.Decimal = new decimal.Decimal(_m) as decimal.Decimal;
     return new R2Vector(m.times(p._x), m.times(p._y));
   }
 
@@ -131,11 +131,11 @@ export class R2Vector {
   public static singleUVToST(_x:number|decimal.Decimal) {
     const x = S2.toDecimal(_x);
     if (x.gte(0)) {
-      return Decimal.sqrt(x.times(3).plus(1)).minus(1);
+      return decimal.Decimal.sqrt(x.times(3).plus(1)).minus(1);
     } else {
       return S2.toDecimal(1)
           .minus(
-              Decimal.sqrt(
+              decimal.Decimal.sqrt(
                   S2.toDecimal(1).minus(x.times(3)
               )
               )
