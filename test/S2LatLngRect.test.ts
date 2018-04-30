@@ -1,10 +1,9 @@
 
 import {S2LatLng} from "../src/S2LatLng";
 import {expect} from "chai";
-import Decimal = require('decimal.js');
 import {S1Angle} from "../src/S1Angle";
 import {S2CellId} from "../src/S2CellId";
-import Long = require('long');
+import Long from 'long';
 import {S2Point} from "../src/S2Point";
 import {S2} from "../src/S2";
 import {S2LatLngRect} from "../src/S2LatLngRect";

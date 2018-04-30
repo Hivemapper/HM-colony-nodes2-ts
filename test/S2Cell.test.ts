@@ -2,7 +2,7 @@
 import {S2Cell} from "../src/S2Cell";
 const genJavaLocs = require('./assets/cell-tests.json');
 import Decimal = require('decimal.js');
-import Long = require('long');
+import Long from 'long';
 declare var __dirname;
 
 import {expect} from "chai";

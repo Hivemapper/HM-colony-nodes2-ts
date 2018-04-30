@@ -3,7 +3,7 @@ import {expect} from "chai";
 const genJavaLocs = require('./assets/main-tests.json');
 const cellTests = require('./assets/cell-tests.json');
 import Decimal = require('decimal.js');
-import Long = require('long');
+import Long from 'long';
 import {S2Point} from "../src/S2Point";
 import {R2Vector} from "../src/R2Vector";
 import {S2LatLngRect} from "../src/S2LatLngRect"; 
