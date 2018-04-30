@@ -5,13 +5,11 @@
     "experimentalDecorators": true,
     "outDir":                 "dist",
     "sourceMap":              true,
+    "declaration": true,
     "moduleResolution":       "node",
-    "declaration": true
+    "esModuleInterop": true
   },
   "files":           [
     "src/export.ts"
-  ],
-  "exclude":         [
-    "node_modules/"
   ]
 }
