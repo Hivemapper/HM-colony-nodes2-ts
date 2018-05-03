@@ -1,12 +1,21 @@
-import * as decimal from 'decimal.js';
-import { S2 } from "./S2";
-export class S1Angle {
-    constructor(radians) {
+"use strict";
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+var decimal = __importStar(require("decimal.js"));
+var S2_1 = require("./S2");
+var S1Angle = /** @class */ (function () {
+    function S1Angle(radians) {
         this.radians = new decimal.Decimal(radians);
     }
-    degrees() {
-        return S2.toDecimal(this.radians).times((180 / Math.PI));
-    }
+    S1Angle.prototype.degrees = function () {
+        return S2_1.S2.toDecimal(this.radians).times((180 / Math.PI));
+    };
     //
     // public long e5() {
     //   return Math.round(degrees() * 1e5);
@@ -24,31 +33,31 @@ export class S1Angle {
      * between these points on the unit sphere. The points do not need to be
      * normalized.
      */
-    static fromPoints(x, y) {
+    S1Angle.fromPoints = function (x, y) {
         return new S1Angle(x.angle(y));
-    }
-    lessThan(that) {
+    };
+    S1Angle.prototype.lessThan = function (that) {
         return this.radians.lt(that.radians);
-    }
-    greaterThan(that) {
+    };
+    S1Angle.prototype.greaterThan = function (that) {
         return this.radians.gt(that.radians);
-    }
-    lessOrEquals(that) {
+    };
+    S1Angle.prototype.lessOrEquals = function (that) {
         return this.radians.lte(that.radians);
-    }
-    greaterOrEquals(that) {
+    };
+    S1Angle.prototype.greaterOrEquals = function (that) {
         return this.radians.gte(that.radians);
-    }
-    static max(left, right) {
+    };
+    S1Angle.max = function (left, right) {
         return right.greaterThan(left) ? right : left;
-    }
-    static min(left, right) {
+    };
+    S1Angle.min = function (left, right) {
         return right.greaterThan(left) ? left : right;
-    }
-    static degrees(degrees) {
-        let d = new decimal.Decimal(degrees);
+    };
+    S1Angle.degrees = function (degrees) {
+        var d = new decimal.Decimal(degrees);
         return new S1Angle(d.times(Math.PI / 180));
-    }
+    };
     //
     // public static S1Angle e5(long e5) {
     //   return degrees(e5 * 1e-5);
@@ -68,11 +77,13 @@ export class S1Angle {
      * 6 digits are printed; this can be changed using setprecision(). Up to 17
      * digits are required to distinguish one angle from another.
      */
-    toString() {
+    S1Angle.prototype.toString = function () {
         return this.degrees() + "d";
-    }
-    compareTo(that) {
+    };
+    S1Angle.prototype.compareTo = function (that) {
         return this.radians < that.radians ? -1 : this.radians > that.radians ? 1 : 0;
-    }
-}
+    };
+    return S1Angle;
+}());
+exports.S1Angle = S1Angle;
 //# sourceMappingURL=S1Angle.js.map

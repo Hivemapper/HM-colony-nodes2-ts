@@ -1,3 +1,4 @@
+"use strict";
 /*
  * Copyright 2006 Google Inc.
  *
@@ -13,17 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { S2Point } from "./S2Point";
-import { S2 } from "./S2";
-import { S1Angle } from "./S1Angle";
-import { Decimal } from 'decimal.js';
+Object.defineProperty(exports, "__esModule", { value: true });
+var S2Point_1 = require("./S2Point");
+var S2_1 = require("./S2");
+var S1Angle_1 = require("./S1Angle");
+var decimal_js_1 = require("decimal.js");
 /**
  * This class contains various utility functions related to edges. It collects
  * together common code that is needed to implement polygonal geometry such as
  * polylines, loops, and general polygons.
  *
  */
-export class S2EdgeUtil {
+var S2EdgeUtil = /** @class */ (function () {
+    function S2EdgeUtil() {
+    }
     //   /**
     //    * IEEE floating-point operations have a maximum error of 0.5 ULPS (units in
     //    * the last place). For double-precision numbers, this works out to 2**-53
@@ -755,28 +759,31 @@ export class S2EdgeUtil {
      * to be normalized, but should be computed using S2.robustCrossProd() for the
      * most accurate results.
      */
-    static getDistance(x, a, b, aCrossB = S2.robustCrossProd(a, b)) {
+    S2EdgeUtil.getDistance = function (x, a, b, aCrossB) {
         // Preconditions.checkArgument(S2.isUnitLength(x));
         // Preconditions.checkArgument(S2.isUnitLength(a));
         // Preconditions.checkArgument(S2.isUnitLength(b));
+        if (aCrossB === void 0) { aCrossB = S2_1.S2.robustCrossProd(a, b); }
         // There are three cases. If X is located in the spherical wedge defined by
         // A, B, and the axis A x B, then the closest point is on the segment AB.
         // Otherwise the closest point is either A or B; the dividing line between
         // these two cases is the great circle passing through (A x B) and the
         // midpoint of AB.
-        if (S2.simpleCCW(aCrossB, a, x) && S2.simpleCCW(x, b, aCrossB)) {
+        if (S2_1.S2.simpleCCW(aCrossB, a, x) && S2_1.S2.simpleCCW(x, b, aCrossB)) {
             // The closest point to X lies on the segment AB. We compute the distance
             // to the corresponding great circle. The result is accurate for small
             // distances but not necessarily for large distances (approaching Pi/2).
-            const sinDist = x.dotProd(aCrossB).abs().dividedBy(aCrossB.norm());
-            return new S1Angle(Decimal.asin(Decimal.min(1.0, sinDist)));
+            var sinDist = x.dotProd(aCrossB).abs().dividedBy(aCrossB.norm());
+            return new S1Angle_1.S1Angle(decimal_js_1.Decimal.asin(decimal_js_1.Decimal.min(1.0, sinDist)));
         }
         // Otherwise, the closest point is either A or B. The cheapest method is
         // just to compute the minimum of the two linear (as opposed to spherical)
         // distances and convert the result to an angle. Again, this method is
         // accurate for small but not large distances (approaching Pi).
-        const linearDist2 = Decimal.min(S2Point.minus(x, a).norm2(), S2Point.minus(x, b).norm2());
-        return new S1Angle(Decimal.asin(Decimal.min(1.0, linearDist2.sqrt().times(0.5))).times(2));
-    }
-}
+        var linearDist2 = decimal_js_1.Decimal.min(S2Point_1.S2Point.minus(x, a).norm2(), S2Point_1.S2Point.minus(x, b).norm2());
+        return new S1Angle_1.S1Angle(decimal_js_1.Decimal.asin(decimal_js_1.Decimal.min(1.0, linearDist2.sqrt().times(0.5))).times(2));
+    };
+    return S2EdgeUtil;
+}());
+exports.S2EdgeUtil = S2EdgeUtil;
 //# sourceMappingURL=S2EdgeUtil.js.map

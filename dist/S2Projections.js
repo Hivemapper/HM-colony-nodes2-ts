@@ -1,3 +1,4 @@
+"use strict";
 /*
  * Copyright 2005 Google Inc.
  *
@@ -13,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * This class specifies the details of how the cube faces are projected onto the
  * unit sphere. This includes getting the face ordering and orientation correct
@@ -64,84 +66,88 @@
  * This data was produced using s2cell_unittest and s2cellid_unittest.
  *
  */
-import { S2, S2Metric } from "./S2";
-import { S2Point } from "./S2Point";
-import { R2Vector } from "./R2Vector";
-export var Projections;
+var S2_1 = require("./S2");
+var S2Point_1 = require("./S2Point");
+var R2Vector_1 = require("./R2Vector");
+var Projections;
 (function (Projections) {
     Projections[Projections["S2_LINEAR_PROJECTION"] = 0] = "S2_LINEAR_PROJECTION";
     Projections[Projections["S2_TAN_PROJECTION"] = 1] = "S2_TAN_PROJECTION";
     Projections[Projections["S2_QUADRATIC_PROJECTION"] = 2] = "S2_QUADRATIC_PROJECTION";
-})(Projections || (Projections = {}));
-export class S2Projections {
-    static getUNorm(face, u) {
+})(Projections = exports.Projections || (exports.Projections = {}));
+var S2Projections = /** @class */ (function () {
+    function S2Projections() {
+    }
+    S2Projections.getUNorm = function (face, u) {
         switch (face) {
             case 0:
-                return new S2Point(u, -1, 0);
+                return new S2Point_1.S2Point(u, -1, 0);
             case 1:
-                return new S2Point(1, u, 0);
+                return new S2Point_1.S2Point(1, u, 0);
             case 2:
-                return new S2Point(1, 0, u);
+                return new S2Point_1.S2Point(1, 0, u);
             case 3:
-                return new S2Point(-u, 0, 1);
+                return new S2Point_1.S2Point(-u, 0, 1);
             case 4:
-                return new S2Point(0, -u, 1);
+                return new S2Point_1.S2Point(0, -u, 1);
             default:
-                return new S2Point(0, -1, -u);
+                return new S2Point_1.S2Point(0, -1, -u);
         }
-    }
-    static getVNorm(face, v) {
+    };
+    S2Projections.getVNorm = function (face, v) {
         switch (face) {
             case 0:
-                return new S2Point(-v, 0, 1);
+                return new S2Point_1.S2Point(-v, 0, 1);
             case 1:
-                return new S2Point(0, -v, 1);
+                return new S2Point_1.S2Point(0, -v, 1);
             case 2:
-                return new S2Point(0, -1, -v);
+                return new S2Point_1.S2Point(0, -1, -v);
             case 3:
-                return new S2Point(v, -1, 0);
+                return new S2Point_1.S2Point(v, -1, 0);
             case 4:
-                return new S2Point(1, v, 0);
+                return new S2Point_1.S2Point(1, v, 0);
             default:
-                return new S2Point(1, 0, v);
+                return new S2Point_1.S2Point(1, 0, v);
         }
-    }
-    static getUAxis(face) {
+    };
+    S2Projections.getUAxis = function (face) {
         switch (face) {
             case 0:
-                return new S2Point(0, 1, 0);
+                return new S2Point_1.S2Point(0, 1, 0);
             case 1:
-                return new S2Point(-1, 0, 0);
+                return new S2Point_1.S2Point(-1, 0, 0);
             case 2:
-                return new S2Point(-1, 0, 0);
+                return new S2Point_1.S2Point(-1, 0, 0);
             case 3:
-                return new S2Point(0, 0, -1);
+                return new S2Point_1.S2Point(0, 0, -1);
             case 4:
-                return new S2Point(0, 0, -1);
+                return new S2Point_1.S2Point(0, 0, -1);
             default:
-                return new S2Point(0, 1, 0);
+                return new S2Point_1.S2Point(0, 1, 0);
         }
-    }
-    static getVAxis(face) {
+    };
+    S2Projections.getVAxis = function (face) {
         switch (face) {
             case 0:
-                return new S2Point(0, 0, 1);
+                return new S2Point_1.S2Point(0, 0, 1);
             case 1:
-                return new S2Point(0, 0, 1);
+                return new S2Point_1.S2Point(0, 0, 1);
             case 2:
-                return new S2Point(0, -1, 0);
+                return new S2Point_1.S2Point(0, -1, 0);
             case 3:
-                return new S2Point(0, -1, 0);
+                return new S2Point_1.S2Point(0, -1, 0);
             case 4:
-                return new S2Point(1, 0, 0);
+                return new S2Point_1.S2Point(1, 0, 0);
             default:
-                return new S2Point(1, 0, 0);
+                return new S2Point_1.S2Point(1, 0, 0);
         }
-    }
-    static faceUvToXyz(face, u, v) {
-        return new R2Vector(u, v).toPoint(face);
-    }
-}
-S2Projections.MIN_WIDTH = new S2Metric(1, S2.M_SQRT2 / 3);
-S2Projections.AVG_AREA = new S2Metric(2, S2.M_PI / 6); // 0.524)
+    };
+    S2Projections.faceUvToXyz = function (face, u, v) {
+        return new R2Vector_1.R2Vector(u, v).toPoint(face);
+    };
+    S2Projections.MIN_WIDTH = new S2_1.S2Metric(1, S2_1.S2.M_SQRT2 / 3);
+    S2Projections.AVG_AREA = new S2_1.S2Metric(2, S2_1.S2.M_PI / 6); // 0.524)
+    return S2Projections;
+}());
+exports.S2Projections = S2Projections;
 //# sourceMappingURL=S2Projections.js.map

@@ -1,6 +1,25 @@
-import { Interval } from "./Interval";
-import { S2 } from "./S2";
-import * as decimal from 'decimal.js';
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+var Interval_1 = require("./Interval");
+var S2_1 = require("./S2");
+var decimal = __importStar(require("decimal.js"));
 /**
  * An R1Interval represents a closed interval on a unit circle (also known as a
  * 1-dimensional sphere). It is capable of representing the empty interval
@@ -20,64 +39,68 @@ import * as decimal from 'decimal.js';
  * [-Pi, Pi], and the Empty() interval is [Pi, -Pi].
  *
  */
-export class R1Interval extends Interval {
+var R1Interval = /** @class */ (function (_super) {
+    __extends(R1Interval, _super);
+    function R1Interval() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
     /** Return true if the interval is empty, i.e. it contains no points. */
-    isEmpty() {
+    R1Interval.prototype.isEmpty = function () {
         return this.lo.gt(this.hi);
-    }
-    getCenter() {
+    };
+    R1Interval.prototype.getCenter = function () {
         return this.lo.plus(this.hi).dividedBy(2);
-    }
-    getLength() {
+    };
+    R1Interval.prototype.getLength = function () {
         return this.hi.minus(this.lo);
-    }
-    contains(_p) {
-        const p = S2.toDecimal(_p);
+    };
+    R1Interval.prototype.contains = function (_p) {
+        var p = S2_1.S2.toDecimal(_p);
         return p.gte(this.lo) && p.lte(this.hi);
-    }
+    };
     /** Return true if the interior of the interval contains the point 'p'. */
-    interiorContains(_p) {
-        const p = S2.toDecimal(_p);
+    R1Interval.prototype.interiorContains = function (_p) {
+        var p = S2_1.S2.toDecimal(_p);
         return p.gt(this.lo) && p.lt(this.hi);
-    }
+    };
     /**
      * Return true if the interval contains the given interval 'y'. Works for
      * empty, full, and singleton intervals.
      */
-    containsI(y) {
+    R1Interval.prototype.containsI = function (y) {
         if (y.isEmpty()) {
             return true;
         }
         return y.lo.gte(this.lo) && y.hi.lte(this.hi);
-    }
-    interiorContainsI(y) {
+    };
+    R1Interval.prototype.interiorContainsI = function (y) {
         if (y.isEmpty()) {
             return true;
         }
         return y.lo.gt(this.lo) && y.hi.lt(this.hi);
-    }
+    };
     /**
      * Return true if this interval intersects the given interval, i.e. if they
      * have any points in common.
      */
-    intersects(y) {
+    R1Interval.prototype.intersects = function (y) {
         if (this.lo.lte(y.lo)) {
             return y.lo.lte(this.hi) && y.lo.lte(y.hi);
         }
         else {
             return this.lo.lte(y.hi) && this.lo.lte(this.hi);
         }
-    }
+    };
     /**
      * Return true if the interior of this interval intersects any point of the
      * given interval (including its boundary).
      */
-    interiorIntersects(y) {
+    R1Interval.prototype.interiorIntersects = function (y) {
         return y.lo.lt(this.hi) && this.lo.lt(y.hi) && this.lo.lt(this.hi) && y.lo.lte(y.hi);
-    }
+    };
     /** Expand the interval so that it contains the given point "p". */
-    addPoint(_p) {
-        const p = S2.toDecimal(_p);
+    R1Interval.prototype.addPoint = function (_p) {
+        var p = S2_1.S2.toDecimal(_p);
         if (this.isEmpty()) {
             return R1Interval.fromPoint(p);
         }
@@ -90,25 +113,25 @@ export class R1Interval extends Interval {
         else {
             return new R1Interval(this.lo, this.hi);
         }
-    }
+    };
     /**
      * Return an interval that contains all points with a distance "radius" of a
      * point in this interval. Note that the expansion of an empty interval is
      * always empty.
      */
-    expanded(_radius) {
-        const radius = S2.toDecimal(_radius);
+    R1Interval.prototype.expanded = function (_radius) {
+        var radius = S2_1.S2.toDecimal(_radius);
         // assert (radius >= 0);
         if (this.isEmpty()) {
             return this;
         }
         return new R1Interval(this.lo.minus(radius), this.hi.plus(radius));
-    }
+    };
     /**
      * Return the smallest interval that contains this interval and the given
      * interval "y".
      */
-    union(y) {
+    R1Interval.prototype.union = function (y) {
         if (this.isEmpty()) {
             return y;
         }
@@ -116,19 +139,20 @@ export class R1Interval extends Interval {
             return this;
         }
         return new R1Interval(decimal.Decimal.min(this.lo, y.lo), decimal.Decimal.max(this.hi, y.hi));
-    }
+    };
     /**
      * Return the intersection of this interval with the given interval. Empty
      * intervals do not need to be special-cased.
      */
-    intersection(y) {
+    R1Interval.prototype.intersection = function (y) {
         return new R1Interval(decimal.Decimal.max(this.lo, y.lo), decimal.Decimal.min(this.hi, y.hi));
-    }
+    };
     /**
      * Return true if the length of the symmetric difference between the two
      * intervals is at most the given tolerance.
      */
-    approxEquals(y, maxError = 1e-15) {
+    R1Interval.prototype.approxEquals = function (y, maxError) {
+        if (maxError === void 0) { maxError = 1e-15; }
         if (this.isEmpty()) {
             return y.getLength().lte(maxError);
         }
@@ -138,27 +162,29 @@ export class R1Interval extends Interval {
         return y.lo.minus(this.lo).abs()
             .plus(y.hi.minus(this.hi).abs())
             .lte(maxError);
-    }
-    static empty() {
+    };
+    R1Interval.empty = function () {
         return new R1Interval(1, 0);
-    }
-    static fromPoint(p) {
+    };
+    R1Interval.fromPoint = function (p) {
         return new R1Interval(p, p);
-    }
+    };
     /**
      * Convenience method to construct the minimal interval containing the two
      * given points. This is equivalent to starting with an empty interval and
      * calling AddPoint() twice, but it is more efficient.
      */
-    static fromPointPair(_p1, _p2) {
-        const p1 = S2.toDecimal(_p1);
-        const p2 = S2.toDecimal(_p2);
+    R1Interval.fromPointPair = function (_p1, _p2) {
+        var p1 = S2_1.S2.toDecimal(_p1);
+        var p2 = S2_1.S2.toDecimal(_p2);
         if (p1.lte(p2)) {
             return new R1Interval(p1, p2);
         }
         else {
             return new R1Interval(p2, p1);
         }
-    }
-}
+    };
+    return R1Interval;
+}(Interval_1.Interval));
+exports.R1Interval = R1Interval;
 //# sourceMappingURL=R1Interval.js.map

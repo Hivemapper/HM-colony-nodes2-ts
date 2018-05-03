@@ -1,3 +1,4 @@
+"use strict";
 /*
  * Copyright 2005 Google Inc.
  *
@@ -13,15 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { S2 } from "./S2";
-import { S2Point } from "./S2Point";
-import { S1Angle } from "./S1Angle";
-import { S2LatLngRect } from "./S2LatLngRect";
-import { S2LatLng } from "./S2LatLng";
-import { R1Interval } from "./R1Interval";
-import { S1Interval } from "./S1Interval";
-import Long from 'long';
-import * as decimal from 'decimal.js';
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+}
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+var S2_1 = require("./S2");
+var S2Point_1 = require("./S2Point");
+var S1Angle_1 = require("./S1Angle");
+var S2LatLngRect_1 = require("./S2LatLngRect");
+var S2LatLng_1 = require("./S2LatLng");
+var R1Interval_1 = require("./R1Interval");
+var S1Interval_1 = require("./S1Interval");
+var long_1 = __importDefault(require("long"));
+var decimal = __importStar(require("decimal.js"));
 /**
  * This class represents a spherical cap, i.e. a portion of a sphere cut off by
  * a plane. The cap is defined by its axis and height. This representation has
@@ -36,15 +48,15 @@ import * as decimal from 'decimal.js';
  * h = 1 - cos(theta) = 2 sin^2(theta/2) d^2 = 2 h = a^2 + h^2
  *
  */
-export class S2Cap {
+var S2Cap = /** @class */ (function () {
     /**
      * Create a cap given its axis and the cap height, i.e. the maximum projected
      * distance along the cap axis from the cap center. 'axis' should be a
      * unit-length vector.
      */
-    constructor(axis, _height) {
+    function S2Cap(axis, _height) {
         this.axis = axis;
-        this.height = S2.toDecimal(_height);
+        this.height = S2_1.S2.toDecimal(_height);
         // assert (isValid());
     }
     /**
@@ -52,117 +64,117 @@ export class S2Cap {
      * between the axis and a point on the cap. 'axis' should be a unit-length
      * vector, and 'angle' should be between 0 and 180 degrees.
      */
-    static fromAxisAngle(axis, angle) {
+    S2Cap.fromAxisAngle = function (axis, angle) {
         // The height of the cap can be computed as 1-cos(angle), but this isn't
         // very accurate for angles close to zero (where cos(angle) is almost 1).
         // Computing it as 2*(sin(angle/2)**2) gives much better precision.
         // assert (S2.isUnitLength(axis));
-        const d = angle.radians.times(0.5).sin();
+        var d = angle.radians.times(0.5).sin();
         // ecimal.sin(0.5 * angle.radians.times(0.5));
         return new S2Cap(axis, d.pow(2).times(2));
-    }
+    };
     /**
      * Create a cap given its axis and its area in steradians. 'axis' should be a
      * unit-length vector, and 'area' should be between 0 and 4 * M_PI.
      */
-    static fromAxisArea(axis, _area) {
-        const area = S2.toDecimal(_area);
+    S2Cap.fromAxisArea = function (axis, _area) {
+        var area = S2_1.S2.toDecimal(_area);
         // assert (S2.isUnitLength(axis));
-        return new S2Cap(axis, area.dividedBy(S2.toDecimal(2).times(S2.M_PI)));
-    }
+        return new S2Cap(axis, area.dividedBy(S2_1.S2.toDecimal(2).times(S2_1.S2.M_PI)));
+    };
     /** Return an empty cap, i.e. a cap that contains no points. */
-    static empty() {
-        return new S2Cap(new S2Point(1, 0, 0), -1);
-    }
+    S2Cap.empty = function () {
+        return new S2Cap(new S2Point_1.S2Point(1, 0, 0), -1);
+    };
     /** Return a full cap, i.e. a cap that contains all points. */
-    static full() {
-        return new S2Cap(new S2Point(1, 0, 0), 2);
-    }
-    getCapBound() {
+    S2Cap.full = function () {
+        return new S2Cap(new S2Point_1.S2Point(1, 0, 0), 2);
+    };
+    S2Cap.prototype.getCapBound = function () {
         return this;
-    }
-    area() {
+    };
+    S2Cap.prototype.area = function () {
         return decimal.Decimal.max(0, this.height)
-            .times(S2.M_PI)
+            .times(S2_1.S2.M_PI)
             .times(2);
         // return 2 * S2.M_PI * Math.max(0.0, this.height);
-    }
+    };
     /**
      * Return the cap opening angle in radians, or a negative number for empty
      * caps.
      */
-    angle() {
+    S2Cap.prototype.angle = function () {
         // This could also be computed as acos(1 - height_), but the following
         // formula is much more accurate when the cap height is small. It
         // follows from the relationship h = 1 - cos(theta) = 2 sin^2(theta/2).
         if (this.isEmpty()) {
-            return new S1Angle(-1);
+            return new S1Angle_1.S1Angle(-1);
         }
-        return new S1Angle(decimal.Decimal.asin(this.height.times(0.5).sqrt())
+        return new S1Angle_1.S1Angle(decimal.Decimal.asin(this.height.times(0.5).sqrt())
             .times(2));
-    }
+    };
     /**
      * We allow negative heights (to represent empty caps) but not heights greater
      * than 2.
      */
-    isValid() {
-        return S2.isUnitLength(this.axis) && this.height.lte(2);
-    }
+    S2Cap.prototype.isValid = function () {
+        return S2_1.S2.isUnitLength(this.axis) && this.height.lte(2);
+    };
     /** Return true if the cap is empty, i.e. it contains no points. */
-    isEmpty() {
+    S2Cap.prototype.isEmpty = function () {
         return this.height.lt(0);
-    }
+    };
     /** Return true if the cap is full, i.e. it contains all points. */
-    isFull() {
+    S2Cap.prototype.isFull = function () {
         return this.height.gte(2);
-    }
+    };
     /**
      * Return the complement of the interior of the cap. A cap and its complement
      * have the same boundary but do not share any interior points. The complement
      * operator is not a bijection, since the complement of a singleton cap
      * (containing a single point) is the same as the complement of an empty cap.
      */
-    complement() {
+    S2Cap.prototype.complement = function () {
         // The complement of a full cap is an empty cap, not a singleton.
         // Also make sure that the complement of an empty cap has height 2.
-        let cHeight = this.isFull() ? -1 : decimal.Decimal.max(this.height, 0).neg().plus(2);
-        return new S2Cap(S2Point.neg(this.axis), cHeight);
-    }
+        var cHeight = this.isFull() ? -1 : decimal.Decimal.max(this.height, 0).neg().plus(2);
+        return new S2Cap(S2Point_1.S2Point.neg(this.axis), cHeight);
+    };
     /**
      * Return true if and only if this cap contains the given other cap (in a set
      * containment sense, e.g. every cap contains the empty cap).
      */
-    containsCap(other) {
+    S2Cap.prototype.containsCap = function (other) {
         if (this.isFull() || other.isEmpty()) {
             return true;
         }
         return this.angle().radians.gte(this.axis.angle(other.axis).plus(other.angle().radians));
-    }
+    };
     /**
      * Return true if and only if the interior of this cap intersects the given
      * other cap. (This relationship is not symmetric, since only the interior of
      * this cap is used.)
      */
-    interiorIntersects(other) {
+    S2Cap.prototype.interiorIntersects = function (other) {
         // Interior(X) intersects Y if and only if Complement(Interior(X))
         // does not contain Y.
         return !this.complement().containsCap(other);
-    }
+    };
     /**
      * Return true if and only if the given point is contained in the interior of
      * the region (i.e. the region excluding its boundary). 'p' should be a
      * unit-length vector.
      */
-    interiorContains(p) {
+    S2Cap.prototype.interiorContains = function (p) {
         // assert (S2.isUnitLength(p));
-        return this.isFull() || S2Point.sub(this.axis, p).norm2().lt(this.height.times(2));
-    }
+        return this.isFull() || S2Point_1.S2Point.sub(this.axis, p).norm2().lt(this.height.times(2));
+    };
     /**
      * Increase the cap height if necessary to include the given point. If the cap
      * is empty the axis is set to the given point, but otherwise it is left
      * unchanged. 'p' should be a unit-length vector.
      */
-    addPoint(p) {
+    S2Cap.prototype.addPoint = function (p) {
         // Compute the squared chord length, then convert it into a height.
         // assert (S2.isUnitLength(p));
         if (this.isEmpty()) {
@@ -172,14 +184,14 @@ export class S2Cap {
             // To make sure that the resulting cap actually includes this point,
             // we need to round up the distance calculation. That is, after
             // calling cap.AddPoint(p), cap.Contains(p) should be true.
-            let dist2 = S2Point.sub(this.axis, p).norm2();
-            let newHeight = decimal.Decimal.max(this.height, S2Cap.ROUND_UP.times(0.5).times(dist2));
+            var dist2 = S2Point_1.S2Point.sub(this.axis, p).norm2();
+            var newHeight = decimal.Decimal.max(this.height, S2Cap.ROUND_UP.times(0.5).times(dist2));
             return new S2Cap(this.axis, newHeight);
         }
-    }
+    };
     // Increase the cap height if necessary to include "other". If the current
     // cap is empty it is set to the given other cap.
-    addCap(other) {
+    S2Cap.prototype.addCap = function (other) {
         if (this.isEmpty()) {
             return new S2Cap(other.axis, other.height);
         }
@@ -187,41 +199,41 @@ export class S2Cap {
             // See comments for FromAxisAngle() and AddPoint(). This could be
             // optimized by doing the calculation in terms of cap heights rather
             // than cap opening angles.
-            let angle = this.axis.angle(other.axis).plus(other.angle().radians);
-            if (angle.gte(S2.M_PI)) {
+            var angle = this.axis.angle(other.axis).plus(other.angle().radians);
+            if (angle.gte(S2_1.S2.M_PI)) {
                 return new S2Cap(this.axis, 2); //Full cap
             }
             else {
-                let d = angle.times(0.5).sin();
-                let newHeight = decimal.Decimal.max(this.height, S2Cap.ROUND_UP.times(2).times(d.pow(2)));
+                var d = angle.times(0.5).sin();
+                var newHeight = decimal.Decimal.max(this.height, S2Cap.ROUND_UP.times(2).times(d.pow(2)));
                 return new S2Cap(this.axis, newHeight);
             }
         }
-    }
+    };
     // //////////////////////////////////////////////////////////////////////
     // S2Region interface (see {@code S2Region} for details):
-    getRectBound() {
+    S2Cap.prototype.getRectBound = function () {
         if (this.isEmpty()) {
-            return S2LatLngRect.empty();
+            return S2LatLngRect_1.S2LatLngRect.empty();
         }
         // Convert the axis to a (lat,lng) pair, and compute the cap angle.
-        const axisLatLng = S2LatLng.fromPoint(this.axis);
-        const capAngle = this.angle().radians;
-        let allLongitudes = false;
-        const lat = Array(2);
-        const lng = Array(2);
-        lng[0] = S2.toDecimal(-S2.M_PI);
-        lng[1] = S2.toDecimal(S2.M_PI);
+        var axisLatLng = S2LatLng_1.S2LatLng.fromPoint(this.axis);
+        var capAngle = this.angle().radians;
+        var allLongitudes = false;
+        var lat = Array(2);
+        var lng = Array(2);
+        lng[0] = S2_1.S2.toDecimal(-S2_1.S2.M_PI);
+        lng[1] = S2_1.S2.toDecimal(S2_1.S2.M_PI);
         // Check whether cap includes the south pole.
         lat[0] = axisLatLng.latRadians.minus(capAngle);
-        if (lat[0].lte(-S2.M_PI_2)) {
-            lat[0] = S2.toDecimal(-S2.M_PI_2);
+        if (lat[0].lte(-S2_1.S2.M_PI_2)) {
+            lat[0] = S2_1.S2.toDecimal(-S2_1.S2.M_PI_2);
             allLongitudes = true;
         }
         // Check whether cap includes the north pole.
         lat[1] = axisLatLng.latRadians.plus(capAngle);
-        if (lat[1].gte(S2.M_PI_2)) {
-            lat[1] = S2.toDecimal(S2.M_PI_2);
+        if (lat[1].gte(S2_1.S2.M_PI_2)) {
+            lat[1] = S2_1.S2.toDecimal(S2_1.S2.M_PI_2);
             allLongitudes = true;
         }
         if (!allLongitudes) {
@@ -237,23 +249,23 @@ export class S2Cap {
             // The formula for sin(a) follows from the relationship h = 1 - cos(a).
             // double sinA = Math.sqrt(this.height * (2 - this.height));
             // double sinC = Math.cos(axisLatLng.lat().radians());
-            const sinA = this.height.times(this.height.neg().plus(2)).sqrt();
-            const sinC = axisLatLng.latRadians.cos();
+            var sinA = this.height.times(this.height.neg().plus(2)).sqrt();
+            var sinC = axisLatLng.latRadians.cos();
             if (sinA.lte(sinC)) {
-                const angleA = decimal.Decimal.asin(sinA.dividedBy(sinC));
-                lng[0] = S2.IEEEremainder(axisLatLng.lngRadians.minus(angleA), 2 * S2.M_PI);
-                lng[1] = S2.IEEEremainder(axisLatLng.lngRadians.plus(angleA), 2 * S2.M_PI);
+                var angleA = decimal.Decimal.asin(sinA.dividedBy(sinC));
+                lng[0] = S2_1.S2.IEEEremainder(axisLatLng.lngRadians.minus(angleA), 2 * S2_1.S2.M_PI);
+                lng[1] = S2_1.S2.IEEEremainder(axisLatLng.lngRadians.plus(angleA), 2 * S2_1.S2.M_PI);
             }
         }
-        return new S2LatLngRect(new R1Interval(lat[0], lat[1]), new S1Interval(lng[0], lng[1]));
-    }
-    containsC(cell) {
+        return new S2LatLngRect_1.S2LatLngRect(new R1Interval_1.R1Interval(lat[0], lat[1]), new S1Interval_1.S1Interval(lng[0], lng[1]));
+    };
+    S2Cap.prototype.containsC = function (cell) {
         // If the cap does not contain all cell vertices, return false.
         // We check the vertices before taking the Complement() because we can't
         // accurately represent the complement of a very small cap (a height
         // of 2-epsilon is rounded off to 2).
-        const vertices = new Array(4);
-        for (let k = 0; k < 4; ++k) {
+        var vertices = new Array(4);
+        for (var k = 0; k < 4; ++k) {
             vertices[k] = cell.getVertex(k);
             if (!this.contains(vertices[k])) {
                 return false;
@@ -263,28 +275,28 @@ export class S2Cap {
         // the cell. (This test is slightly conservative, because technically we
         // want Complement().InteriorIntersects() here.)
         return !this.complement().intersects(cell, vertices);
-    }
+    };
     // public mayIntersectC(cell:S2Cell):boolean {
     //   const toRet = this._mayIntersectC(cell);
     //   console.log("intersects? ",toRet, cell.id.pos().toString(16), cell.level);
     //   return toRet;
     // }
-    mayIntersectC(cell) {
+    S2Cap.prototype.mayIntersectC = function (cell) {
         // If the cap contains any cell vertex, return true.
-        const vertices = new Array(4);
-        for (let k = 0; k < 4; ++k) {
+        var vertices = new Array(4);
+        for (var k = 0; k < 4; ++k) {
             vertices[k] = cell.getVertex(k);
             if (this.contains(vertices[k])) {
                 return true;
             }
         }
         return this.intersects(cell, vertices);
-    }
+    };
     /**
      * Return true if the cap intersects 'cell', given that the cap vertices have
      * alrady been checked.
      */
-    intersects(cell, vertices) {
+    S2Cap.prototype.intersects = function (cell, vertices) {
         // Return true if this cap intersects any point of 'cell' excluding its
         // vertices (which are assumed to already have been checked).
         // If the cap is a hemisphere or larger, the cell and the complement of the
@@ -305,13 +317,13 @@ export class S2Cap {
         // At this point we know that the cell does not contain the cap axis,
         // and the cap does not contain any cell vertex. The only way that they
         // can intersect is if the cap intersects the interior of some edge.
-        const sin2Angle = this.height.times(this.height.neg().plus(2)); // sin^2(capAngle)
+        var sin2Angle = this.height.times(this.height.neg().plus(2)); // sin^2(capAngle)
         // if (cell.id.pos().toString(16) === '77c040000000000') {
         //   console.log("DIOCAN");
         // }
-        for (let k = 0; k < 4; ++k) {
-            let edge = cell.getEdgeRaw(k);
-            let dot = this.axis.dotProd(edge);
+        for (var k = 0; k < 4; ++k) {
+            var edge = cell.getEdgeRaw(k);
+            var dot = this.axis.dotProd(edge);
             if (dot.gt(0)) {
                 // The axis is in the interior half-space defined by the edge. We don't
                 // need to consider these edges, since if the cap intersects this edge
@@ -329,19 +341,19 @@ export class S2Cap {
             // Otherwise, the great circle containing this edge intersects
             // the interior of the cap. We just need to check whether the point
             // of closest approach occurs between the two edge endpoints.
-            const dir = S2Point.crossProd(edge, this.axis);
+            var dir = S2Point_1.S2Point.crossProd(edge, this.axis);
             if (dir.dotProd(vertices[k]).lt(0)
                 && dir.dotProd(vertices[(k + 1) & 3]).gt(0)) {
                 return true;
             }
         }
         return false;
-    }
-    contains(p) {
+    };
+    S2Cap.prototype.contains = function (p) {
         // The point 'p' should be a unit-length vector.
         // assert (S2.isUnitLength(p));
-        return S2Point.sub(this.axis, p).norm2().lte(this.height.times(2));
-    }
+        return S2Point_1.S2Point.sub(this.axis, p).norm2().lte(this.height.times(2));
+    };
     //
     // /** Return true if two caps are identical. */
     // public equals(that:Object ):boolean  {
@@ -376,24 +388,27 @@ export class S2Cap {
      * Return true if the cap axis and height differ by at most "max_error" from
      * the given cap "other".
      */
-    approxEquals(other, maxError = 1e-14) {
+    S2Cap.prototype.approxEquals = function (other, maxError) {
+        if (maxError === void 0) { maxError = 1e-14; }
         return (this.axis.aequal(other.axis, maxError) && this.height.minus(other.height).lte(maxError))
             || (this.isEmpty() && other.height.lte(maxError))
             || (other.isEmpty() && this.height.lte(maxError))
             || (this.isFull() && other.height.gte(2 - maxError))
             || (other.isFull() && this.height.gte(2 - maxError));
-    }
-    toString() {
+    };
+    S2Cap.prototype.toString = function () {
         return "[Point = " + this.axis.toString() + " Height = " + this.height.toString() + "]";
-    }
-    toGEOJSON() {
+    };
+    S2Cap.prototype.toGEOJSON = function () {
         return this.getRectBound().toGEOJSON();
-    }
-}
-/**
- * Multiply a positive number by this constant to ensure that the result of a
- * floating point operation is at least as large as the true
- * infinite-precision result.
- */
-S2Cap.ROUND_UP = S2.toDecimal(1).dividedBy(new Long(1).shiftLeft(52).toString()).plus(1);
+    };
+    /**
+     * Multiply a positive number by this constant to ensure that the result of a
+     * floating point operation is at least as large as the true
+     * infinite-precision result.
+     */
+    S2Cap.ROUND_UP = S2_1.S2.toDecimal(1).dividedBy(new long_1.default(1).shiftLeft(52).toString()).plus(1);
+    return S2Cap;
+}());
+exports.S2Cap = S2Cap;
 //# sourceMappingURL=S2Cap.js.map

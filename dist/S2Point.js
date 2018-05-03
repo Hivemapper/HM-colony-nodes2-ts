@@ -1,3 +1,4 @@
+"use strict";
 /*
  * Copyright 2006 Google Inc.
  *
@@ -13,9 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { R2Vector } from "./R2Vector";
-import * as decimal from 'decimal.js';
-import { S2 } from "./S2";
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+var R2Vector_1 = require("./R2Vector");
+var decimal = __importStar(require("decimal.js"));
+var S2_1 = require("./S2");
 ///re
 /**
  * An S2Point represents a point on the unit sphere as a 3D vector. Usually
@@ -23,53 +32,53 @@ import { S2 } from "./S2";
  * this.
  *
  */
-export class S2Point {
-    constructor(x, y, z) {
+var S2Point = /** @class */ (function () {
+    function S2Point(x, y, z) {
         this.x = new decimal.Decimal(x);
         this.y = new decimal.Decimal(y);
         this.z = new decimal.Decimal(z);
         // this.y = typeof(y) === 'number'?new decimal.Decimal(y):y as decimal.Decimal;
         // this.z = typeof(z) === 'number'?new decimal.Decimal(z):z as decimal.Decimal;
     }
-    static minus(p1, p2) {
+    S2Point.minus = function (p1, p2) {
         return S2Point.sub(p1, p2);
-    }
-    static neg(p) {
+    };
+    S2Point.neg = function (p) {
         return new S2Point(p.x.negated(), p.y.negated(), p.z.negated());
-    }
-    norm2() {
+    };
+    S2Point.prototype.norm2 = function () {
         return this.x.pow(2).plus(this.y.pow(2)).plus(this.z.pow(2));
-    }
-    norm() {
+    };
+    S2Point.prototype.norm = function () {
         return this.norm2().sqrt();
-    }
-    static crossProd(p1, p2) {
+    };
+    S2Point.crossProd = function (p1, p2) {
         return new S2Point(p1.y.times(p2.z).minus(p1.z.times(p2.y)), p1.z.times(p2.x).minus(p1.x.times(p2.z)), 
         // p1.z * p2.x - p1.x * p2.z,
         p1.x.times(p2.y).minus(p1.y.times(p2.x))
         // p1.x * p2.y - p1.y * p2.x
         );
-    }
-    static add(p1, p2) {
+    };
+    S2Point.add = function (p1, p2) {
         return new S2Point(p1.x.add(p2.x), p1.y.add(p2.y), p1.z.add(p2.z));
-    }
-    static sub(p1, p2) {
+    };
+    S2Point.sub = function (p1, p2) {
         return new S2Point(p1.x.sub(p2.x), p1.y.sub(p2.y), p1.z.sub(p2.z));
-    }
-    dotProd(that) {
+    };
+    S2Point.prototype.dotProd = function (that) {
         return this.x.times(that.x).plus(this.y.times(that.y)).plus(this.z.times(that.z));
-    }
-    static mul(p, m) {
-        let mD = new decimal.Decimal(m);
+    };
+    S2Point.mul = function (p, m) {
+        var mD = new decimal.Decimal(m);
         return new S2Point(mD.times(p.x), mD.times(p.y), mD.times(p.z));
-    }
-    static div(p, m) {
+    };
+    S2Point.div = function (p, m) {
         return new S2Point(p.x.div(m), p.y.div(m), p.z.div(m));
-    }
+    };
     /** return a vector orthogonal to this one */
-    ortho() {
-        let k = this.largestAbsComponent();
-        let temp;
+    S2Point.prototype.ortho = function () {
+        var k = this.largestAbsComponent();
+        var temp;
         if (k == 1) {
             temp = new S2Point(1, 0, 0);
         }
@@ -80,10 +89,10 @@ export class S2Point {
             temp = new S2Point(0, 0, 1);
         }
         return S2Point.normalize(S2Point.crossProd(this, temp));
-    }
+    };
     /** Return the index of the largest component fabs */
-    largestAbsComponent() {
-        let temp = S2Point.fabs(this);
+    S2Point.prototype.largestAbsComponent = function () {
+        var temp = S2Point.fabs(this);
         if (temp.x.greaterThan(temp.y)) {
             if (temp.x.greaterThan(temp.z)) {
                 return 0;
@@ -100,40 +109,40 @@ export class S2Point {
                 return 2;
             }
         }
-    }
-    static fabs(p) {
+    };
+    S2Point.fabs = function (p) {
         return new S2Point(p.x.abs(), p.y.abs(), p.z.abs());
-    }
-    static normalize(p) {
-        let norm = p.norm();
+    };
+    S2Point.normalize = function (p) {
+        var norm = p.norm();
         if (!norm.eq(0)) {
-            norm = S2.toDecimal(1).dividedBy(norm);
+            norm = S2_1.S2.toDecimal(1).dividedBy(norm);
         }
         return S2Point.mul(p, norm);
-    }
-    axis(axis) {
+    };
+    S2Point.prototype.axis = function (axis) {
         return (axis == 0) ? this.x : (axis == 1) ? this.y : this.z;
-    }
+    };
     /** Return the angle between two vectors in radians */
-    angle(va) {
+    S2Point.prototype.angle = function (va) {
         return decimal.Decimal.atan2(S2Point.crossProd(this, va).norm(), this.dotProd(va));
-    }
+    };
     /**
      * Compare two vectors, return true if all their components are within a
      * difference of margin.
      */
-    aequal(that, margin) {
+    S2Point.prototype.aequal = function (that, margin) {
         return this.x.minus(that.x).abs().lessThan(margin) &&
             this.y.minus(that.y).abs().lessThan(margin) &&
             this.z.minus(that.z).abs().lessThan(margin);
-    }
-    equals(that) {
+    };
+    S2Point.prototype.equals = function (that) {
         if (!(that instanceof S2Point)) {
             return false;
         }
         return this.x.eq(that.x) && this.y.eq(that.y) && this.z.eq(that.z);
-    }
-    lessThan(vb) {
+    };
+    S2Point.prototype.lessThan = function (vb) {
         if (this.x.lt(vb.x)) {
             return true;
         }
@@ -150,20 +159,21 @@ export class S2Point {
             return true;
         }
         return false;
-    }
-    compareTo(other) {
+    };
+    S2Point.prototype.compareTo = function (other) {
         return (this.lessThan(other) ? -1 : (this.equals(other) ? 0 : 1));
-    }
-    toFace() {
-        let face = this.largestAbsComponent();
+    };
+    S2Point.prototype.toFace = function () {
+        var face = this.largestAbsComponent();
         if (this.axis(face).lt(0)) {
             face += 3;
         }
         return face;
-    }
-    toR2Vector(face = this.toFace()) {
-        let u;
-        let v;
+    };
+    S2Point.prototype.toR2Vector = function (face) {
+        if (face === void 0) { face = this.toFace(); }
+        var u;
+        var v;
         switch (face) {
             case 0:
                 u = this.y.div(this.x);
@@ -192,10 +202,12 @@ export class S2Point {
             default:
                 throw new Error('Invalid face');
         }
-        return new R2Vector(u, v);
-    }
-    toString() {
-        return `Point(${this.x.toNumber()}, ${this.y.toNumber()}, ${this.z.toNumber()})`;
-    }
-}
+        return new R2Vector_1.R2Vector(u, v);
+    };
+    S2Point.prototype.toString = function () {
+        return "Point(" + this.x.toNumber() + ", " + this.y.toNumber() + ", " + this.z.toNumber() + ")";
+    };
+    return S2Point;
+}());
+exports.S2Point = S2Point;
 //# sourceMappingURL=S2Point.js.map
