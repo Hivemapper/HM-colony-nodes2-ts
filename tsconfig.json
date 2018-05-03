@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "target":                 "ES2015",
-    "emitDecoratorMetadata":  true,
+    "target": "es5",
+    "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "outDir":                 "dist",
-    "sourceMap":              true,
+    "outDir": "dist",
+    "sourceMap": true,
     "declaration": true,
-    "moduleResolution":       "node",
+    "moduleResolution": "node",
     "esModuleInterop": true
   },
   "files":           [
