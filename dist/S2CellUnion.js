@@ -1,8 +1,3 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-}
-Object.defineProperty(exports, "__esModule", { value: true });
 /*
  * Copyright 2005 Google Inc.
  *
@@ -18,14 +13,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var long_1 = __importDefault(require("long"));
-var S2CellId_1 = require("./S2CellId");
-var S2Cell_1 = require("./S2Cell");
-var S2Projections_1 = require("./S2Projections");
-var S2LatLngRect_1 = require("./S2LatLngRect");
-var S2Point_1 = require("./S2Point");
-var S2_1 = require("./S2");
-var S2Cap_1 = require("./S2Cap");
+import Long from 'long';
+import { S2CellId } from "./S2CellId";
+import { S2Cell } from "./S2Cell";
+import { S2Projections } from "./S2Projections";
+import { S2LatLngRect } from "./S2LatLngRect";
+import { S2Point } from "./S2Point";
+import { S2 } from "./S2";
+import { S2Cap } from "./S2Cap";
 /**
  * An S2CellUnion is a region consisting of cells of various sizes. Typically a
  * cell union is used to approximate some other shape. There is a tradeoff
@@ -62,7 +57,7 @@ var S2CellUnion = /** @class */ (function () {
         var size = cellIds.length;
         this.cellIds = [];
         for (var i = 0; i < size; i++) {
-            this.cellIds.push(new S2CellId_1.S2CellId(cellIds[i]));
+            this.cellIds.push(new S2CellId(cellIds[i]));
         }
     };
     /**
@@ -108,8 +103,8 @@ var S2CellUnion = /** @class */ (function () {
             if (levelMod > 1) {
                 // Round up so that (new_level - min_level) is a multiple of level_mod.
                 // (Note that S2CellId::kMaxLevel is a multiple of 1, 2, and 3.)
-                newLevel += (S2CellId_1.S2CellId.MAX_LEVEL - (newLevel - minLevel)) % levelMod;
-                newLevel = Math.min(S2CellId_1.S2CellId.MAX_LEVEL, newLevel);
+                newLevel += (S2CellId.MAX_LEVEL - (newLevel - minLevel)) % levelMod;
+                newLevel = Math.min(S2CellId.MAX_LEVEL, newLevel);
             }
             if (newLevel == level) {
                 output.push(id);
@@ -153,7 +148,7 @@ var S2CellUnion = /** @class */ (function () {
         // the space-filling curve. So we simply find the pair of cell ids that
         // surround the given cell id (using binary search). There is containment
         // if and only if one of these two cell ids contains this cell.
-        var pos = S2CellId_1.S2CellId.binarySearch(this.cellIds, id.id);
+        var pos = S2CellId.binarySearch(this.cellIds, id.id);
         if (pos < 0) {
             pos = -pos - 1;
         }
@@ -169,7 +164,7 @@ var S2CellUnion = /** @class */ (function () {
     S2CellUnion.prototype.intersects = function (id) {
         // This function requires that Normalize has been called first.
         // This is an exact test; see the comments for Contains() above.
-        var pos = S2CellId_1.S2CellId.binarySearch(this.cellIds, id.id);
+        var pos = S2CellId.binarySearch(this.cellIds, id.id);
         if (pos < 0) {
             pos = -pos - 1;
         }
@@ -223,7 +218,7 @@ var S2CellUnion = /** @class */ (function () {
             this.cellIds.push(id);
         }
         else {
-            var pos = S2CellId_1.S2CellId.binarySearch(x.cellIds, id.rangeMin().id);
+            var pos = S2CellId.binarySearch(x.cellIds, id.rangeMin().id);
             if (pos < 0) {
                 pos = -pos - 1;
             }
@@ -256,7 +251,7 @@ var S2CellUnion = /** @class */ (function () {
                 }
                 else {
                     // Advance "j" to the first cell possibly contained by *i.
-                    j = S2CellId_1.S2CellId.indexedBinarySearch(y.cellIds, imin, j + 1);
+                    j = S2CellId.indexedBinarySearch(y.cellIds, imin, j + 1);
                     // The previous cell *(j-1) may now contain *i.
                     if (x.cellId(i).lessOrEquals(y.cellId(j - 1).rangeMax())) {
                         --j;
@@ -269,7 +264,7 @@ var S2CellUnion = /** @class */ (function () {
                     this.cellIds.push(y.cellId(j++));
                 }
                 else {
-                    i = S2CellId_1.S2CellId.indexedBinarySearch(x.cellIds, jmin, i + 1);
+                    i = S2CellId.indexedBinarySearch(x.cellIds, jmin, i + 1);
                     if (y.cellId(j).lessOrEquals(x.cellId(i - 1).rangeMax())) {
                         --i;
                     }
@@ -302,7 +297,7 @@ var S2CellUnion = /** @class */ (function () {
      */
     S2CellUnion.prototype.expand = function (level) {
         var output = [];
-        var levelLsb = S2CellId_1.S2CellId.lowestOnBitForLevel(level);
+        var levelLsb = S2CellId.lowestOnBitForLevel(level);
         var i = this.size() - 1;
         do {
             var id = this.cellId(i);
@@ -333,15 +328,15 @@ var S2CellUnion = /** @class */ (function () {
      * maxLevelDiff) times larger than the number of cells in the input.
      */
     S2CellUnion.prototype.expandA = function (minRadius, maxLevelDiff) {
-        var minLevel = S2CellId_1.S2CellId.MAX_LEVEL;
+        var minLevel = S2CellId.MAX_LEVEL;
         for (var i = 0; i < this.cellIds.length; i++) {
             var id = this.cellId(i);
             minLevel = Math.min(minLevel, id.level());
         }
         // Find the maximum level such that all cells are at least "min_radius"
         // wide.
-        var radiusLevel = S2Projections_1.S2Projections.MIN_WIDTH.getMaxLevel(minRadius.radians);
-        if (radiusLevel == 0 && minRadius.radians.gt(S2Projections_1.S2Projections.MIN_WIDTH.getValue(0))) {
+        var radiusLevel = S2Projections.MIN_WIDTH.getMaxLevel(minRadius.radians);
+        if (radiusLevel == 0 && minRadius.radians.gt(S2Projections.MIN_WIDTH.getValue(0))) {
             // The requested expansion is greater than the width of a face cell.
             // The easiest way to handle this is to expand twice.
             this.expand(0);
@@ -352,33 +347,33 @@ var S2CellUnion = /** @class */ (function () {
         // Compute the approximate centroid of the region. This won't produce the
         // bounding cap of minimal area, but it should be close enough.
         if (this.cellIds.length == 0) {
-            return S2Cap_1.S2Cap.empty();
+            return S2Cap.empty();
         }
-        var centroid = new S2Point_1.S2Point(0, 0, 0);
+        var centroid = new S2Point(0, 0, 0);
         this.cellIds.forEach(function (id) {
-            var area = S2Cell_1.S2Cell.averageArea(id.level());
-            centroid = S2Point_1.S2Point.add(centroid, S2Point_1.S2Point.mul(id.toPoint(), area));
+            var area = S2Cell.averageArea(id.level());
+            centroid = S2Point.add(centroid, S2Point.mul(id.toPoint(), area));
         });
-        if (centroid.equals(new S2Point_1.S2Point(0, 0, 0))) {
-            centroid = new S2Point_1.S2Point(1, 0, 0);
+        if (centroid.equals(new S2Point(0, 0, 0))) {
+            centroid = new S2Point(1, 0, 0);
         }
         else {
-            centroid = S2Point_1.S2Point.normalize(centroid);
+            centroid = S2Point.normalize(centroid);
         }
         // Use the centroid as the cap axis, and expand the cap angle so that it
         // contains the bounding caps of all the individual cells. Note that it is
         // *not* sufficient to just bound all the cell vertices because the bounding
         // cap may be concave (i.e. cover more than one hemisphere).
-        var cap = new S2Cap_1.S2Cap(centroid, 0);
+        var cap = new S2Cap(centroid, 0);
         this.cellIds.forEach(function (id) {
-            cap = cap.addCap(new S2Cell_1.S2Cell(id).getCapBound());
+            cap = cap.addCap(new S2Cell(id).getCapBound());
         });
         return cap;
     };
     S2CellUnion.prototype.getRectBound = function () {
-        var bound = S2LatLngRect_1.S2LatLngRect.empty();
+        var bound = S2LatLngRect.empty();
         this.cellIds.forEach(function (id) {
-            bound = bound.union(new S2Cell_1.S2Cell(id).getRectBound());
+            bound = bound.union(new S2Cell(id).getRectBound());
         });
         return bound;
     };
@@ -391,7 +386,7 @@ var S2CellUnion = /** @class */ (function () {
      * (logarithmic in the size of the cell union).
      */
     S2CellUnion.prototype.containsPoint = function (p) {
-        return this.contains(S2CellId_1.S2CellId.fromPoint(p));
+        return this.contains(S2CellId.fromPoint(p));
     };
     /**
      * The number of leaf cells covered by the union.
@@ -400,11 +395,11 @@ var S2CellUnion = /** @class */ (function () {
      * @return the number of leaf cells covered by the union
      */
     S2CellUnion.prototype.leafCellsCovered = function () {
-        var numLeaves = new long_1.default(0);
+        var numLeaves = new Long(0);
         this.cellIds.forEach(function (id) {
-            var invertedLevel = S2CellId_1.S2CellId.MAX_LEVEL - id.level();
+            var invertedLevel = S2CellId.MAX_LEVEL - id.level();
             numLeaves = numLeaves
-                .add(new long_1.default(1).shiftLeft(invertedLevel << 1));
+                .add(new Long(1).shiftLeft(invertedLevel << 1));
         });
         return numLeaves;
     };
@@ -422,7 +417,7 @@ var S2CellUnion = /** @class */ (function () {
      * @return the sum of the average area of each contained cell's average area
      */
     S2CellUnion.prototype.averageBasedArea = function () {
-        return S2_1.S2.toDecimal(this.leafCellsCovered().toString()).times(S2Projections_1.S2Projections.AVG_AREA.getValue(S2CellId_1.S2CellId.MAX_LEVEL)).toNumber();
+        return S2.toDecimal(this.leafCellsCovered().toString()).times(S2Projections.AVG_AREA.getValue(S2CellId.MAX_LEVEL)).toNumber();
     };
     /**
      * Calculates this cell union's area by summing the approximate area for each
@@ -431,9 +426,9 @@ var S2CellUnion = /** @class */ (function () {
      * @return approximate area of the cell union
      */
     S2CellUnion.prototype.approxArea = function () {
-        var area = S2_1.S2.toDecimal(0);
+        var area = S2.toDecimal(0);
         this.cellIds.forEach(function (id) {
-            area = area.plus(new S2Cell_1.S2Cell(id).approxArea());
+            area = area.plus(new S2Cell(id).approxArea());
         });
         return area.toNumber();
     };
@@ -444,9 +439,9 @@ var S2CellUnion = /** @class */ (function () {
      * @return the exact area of the cell union
      */
     S2CellUnion.prototype.exactArea = function () {
-        var area = S2_1.S2.toDecimal(0);
+        var area = S2.toDecimal(0);
         this.cellIds.forEach(function (id) {
-            area = area.plus(new S2Cell_1.S2Cell(id).exactArea());
+            area = area.plus(new S2Cell(id).exactArea());
         });
         return area.toNumber();
     };
@@ -520,5 +515,5 @@ var S2CellUnion = /** @class */ (function () {
     };
     return S2CellUnion;
 }());
-exports.S2CellUnion = S2CellUnion;
+export { S2CellUnion };
 //# sourceMappingURL=S2CellUnion.js.map

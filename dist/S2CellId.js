@@ -1,4 +1,3 @@
-"use strict";
 /*
  * Copyright 2005 Google Inc.
  *
@@ -14,26 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-}
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-var long_1 = __importDefault(require("long"));
-var S2Point_1 = require("./S2Point");
-var R2Vector_1 = require("./R2Vector");
-var S2_1 = require("./S2");
-var MutableInteger_1 = require("./MutableInteger");
-var S2LatLng_1 = require("./S2LatLng");
-var decimal = __importStar(require("decimal.js"));
+import Long from 'long';
+import { S2Point } from "./S2Point";
+import { R2Vector } from "./R2Vector";
+import { S2 } from "./S2";
+import { MutableInteger } from "./MutableInteger";
+import { S2LatLng } from "./S2LatLng";
+import * as decimal from 'decimal.js';
 var parseHex = function parseHex(str) {
-    return long_1.default.fromString(str, false, 16);
+    return Long.fromString(str, false, 16);
 };
 /**
  * An S2CellId is a 64-bit unsigned integer that uniquely identifies a cell in
@@ -68,7 +56,7 @@ var parseHex = function parseHex(str) {
 var S2CellId = /** @class */ (function () {
     function S2CellId(id) {
         if (typeof (id) === 'string') {
-            this.id = long_1.default.fromString(id);
+            this.id = Long.fromString(id);
         }
         else {
             this.id = id;
@@ -88,7 +76,7 @@ var S2CellId = /** @class */ (function () {
     };
     /** The default constructor returns an invalid cell id. */
     S2CellId.none = function () {
-        return new S2CellId(new long_1.default(0));
+        return new S2CellId(new Long(0));
     };
     /**
      * Returns an invalid cell id guaranteed to be larger than any valid cell id.
@@ -118,7 +106,7 @@ var S2CellId = /** @class */ (function () {
          * kLookupBits)));
          */
         j.val = j.val + ((((bits >> 2) & ((1 << S2CellId.LOOKUP_BITS) - 1))) << (k * S2CellId.LOOKUP_BITS));
-        bits &= (S2_1.S2.SWAP_MASK | S2_1.S2.INVERT_MASK);
+        bits &= (S2.SWAP_MASK | S2.INVERT_MASK);
         return bits;
     };
     /**
@@ -127,13 +115,13 @@ var S2CellId = /** @class */ (function () {
      */
     S2CellId.prototype.faceSiTiToXYZ = function (face, si, ti) {
         // console.log('faceSiTiToXYZ', si, ti);
-        var kScale = S2_1.S2.toDecimal(1).dividedBy(S2CellId.MAX_SIZE);
-        var uvVector = R2Vector_1.R2Vector.fromSTVector(new R2Vector_1.R2Vector(kScale.times(si), kScale.times(ti)));
+        var kScale = S2.toDecimal(1).dividedBy(S2CellId.MAX_SIZE);
+        var uvVector = R2Vector.fromSTVector(new R2Vector(kScale.times(si), kScale.times(ti)));
         // console.log(uvVector.toString(), uvVector.x.toString());
         return uvVector.toPoint(face);
     };
     S2CellId.lowestOnBitForLevel = function (level) {
-        return new long_1.default(1).shiftLeft(2 * (S2CellId.MAX_LEVEL - level));
+        return new Long(1).shiftLeft(2 * (S2CellId.MAX_LEVEL - level));
     };
     /**
      * Return the (face, i, j) coordinates for the leaf cell corresponding to this
@@ -145,7 +133,7 @@ var S2CellId = /** @class */ (function () {
     S2CellId.prototype.toFaceIJOrientation = function (pi, pj, orientation) {
         // System.out.println("Entering toFaceIjorientation");
         var face = this.face;
-        var bits = (face & S2_1.S2.SWAP_MASK);
+        var bits = (face & S2.SWAP_MASK);
         // System.out.println("face = " + face + " bits = " + bits);
         // Each iteration maps 8 bits of the Hilbert curve position into
         // 4 bits of "i" and "j". The lookup table transforms a key of the
@@ -169,8 +157,8 @@ var S2CellId = /** @class */ (function () {
             // the kSwapMask bit.
             // assert (S2.POS_TO_ORIENTATION[2] == 0);
             // assert (S2.POS_TO_ORIENTATION[0] == S2.SWAP_MASK);
-            if ((long_1.default.fromString('0x1111111111111110', true, 16).and(this.lowestOnBit()).notEquals(0))) {
-                bits ^= S2_1.S2.SWAP_MASK;
+            if ((Long.fromString('0x1111111111111110', true, 16).and(this.lowestOnBit()).notEquals(0))) {
+                bits ^= S2.SWAP_MASK;
             }
             orientation.val = bits;
         }
@@ -208,7 +196,7 @@ var S2CellId = /** @class */ (function () {
      */
     S2CellId.fromFacePosLevel = function (face, pos, level) {
         // equivalent to pos | 1
-        return new S2CellId(new long_1.default(face)
+        return new S2CellId(new Long(face)
             .shiftLeft(S2CellId.POS_BITS)
             .add(pos.or(1))).parentL(level);
         // return new S2CellId((((long) face) << POS_BITS) + (pos | 1)).parent(level);
@@ -231,7 +219,7 @@ var S2CellId = /** @class */ (function () {
     //   return fromPoint(ll.toPoint());
     // }
     S2CellId.prototype.toPoint = function () {
-        return S2Point_1.S2Point.normalize(this.toPointRaw());
+        return S2Point.normalize(this.toPointRaw());
     };
     /**
      * Return the direction vector corresponding to the center of the given cell.
@@ -256,28 +244,28 @@ var S2CellId = /** @class */ (function () {
         // The following calculation converts (i,j) to the (si,ti) coordinates of
         // the cell center. (We need to multiply the coordinates by a factor of 2
         // so that the center of leaf cells can be represented exactly.)
-        var i = new MutableInteger_1.MutableInteger(0);
-        var j = new MutableInteger_1.MutableInteger(0);
+        var i = new MutableInteger(0);
+        var j = new MutableInteger(0);
         var face = this.toFaceIJOrientation(i, j, null);
         // System.out.println("i= " + i.intValue() + " j = " + j.intValue());
         // let delta = isLeaf() ? 1 : (((i.intValue() ^ (((int) id) >>> 2)) & 1) != 0) ? 2 : 0;
         var delta = this.isLeaf()
             ? 1 :
-            ((((new long_1.default(i.val).getLowBits() ^ ((this.id.getLowBits()) >>> 2)) & 1) != 0)
+            ((((new Long(i.val).getLowBits() ^ ((this.id.getLowBits()) >>> 2)) & 1) != 0)
                 ? 2 : 0);
         // let delta = this.isLeaf() ? 1 : new Long(i.val).and(this.id.getLowBits() >>> 2).and(1).notEquals(1) ? 2 : 0
         // ((i.val ? (((int)id) >>> 2))  & 1  ))
-        var si = new long_1.default((i.val << 1) + delta - S2CellId.MAX_SIZE).getLowBits();
-        var ti = new long_1.default((j.val << 1) + delta - S2CellId.MAX_SIZE).getLowBits();
+        var si = new Long((i.val << 1) + delta - S2CellId.MAX_SIZE).getLowBits();
+        var ti = new Long((j.val << 1) + delta - S2CellId.MAX_SIZE).getLowBits();
         return this.faceSiTiToXYZ(face, si, ti);
     };
     /** Return the S2LatLng corresponding to the center of the given cell. */
     S2CellId.prototype.toLatLng = function () {
-        return S2LatLng_1.S2LatLng.fromPoint(this.toPointRaw());
+        return S2LatLng.fromPoint(this.toPointRaw());
     };
     /** Return true if id() represents a valid cell. */
     S2CellId.prototype.isValid = function () {
-        return this.face < S2CellId.NUM_FACES && ((this.lowestOnBit().and(long_1.default.fromString('0x1555555555555555', false, 16)).notEquals(0)));
+        return this.face < S2CellId.NUM_FACES && ((this.lowestOnBit().and(Long.fromString('0x1555555555555555', false, 16)).notEquals(0)));
         // return this.face() < NUM_FACES && ((lowestOnBit() & (0x1555555555555555L)) != 0);
     };
     /**
@@ -451,10 +439,10 @@ var S2CellId = /** @class */ (function () {
         return new S2CellId(p.id.add(S2CellId.WRAP_OFFSET));
     };
     S2CellId.begin = function (level) {
-        return S2CellId.fromFacePosLevel(0, new long_1.default(0), 0).childBeginL(level);
+        return S2CellId.fromFacePosLevel(0, new Long(0), 0).childBeginL(level);
     };
     S2CellId.end = function (level) {
-        return S2CellId.fromFacePosLevel(5, new long_1.default(0), 0).childEndL(level);
+        return S2CellId.fromFacePosLevel(5, new Long(0), 0).childEndL(level);
     };
     /**
      * Decodes the cell id from a compact text string suitable for display or
@@ -475,11 +463,11 @@ var S2CellId = /** @class */ (function () {
         if (token.length > 16 || "X" == token) {
             return S2CellId.none();
         }
-        var value = new long_1.default(0);
+        var value = new Long(0);
         for (var pos = 0; pos < 16; pos++) {
-            var digit = new long_1.default(0);
+            var digit = new Long(0);
             if (pos < token.length) {
-                digit = long_1.default.fromString(token[pos], true, 16);
+                digit = Long.fromString(token[pos], true, 16);
                 if (digit.equals(-1)) {
                     throw new Error(token);
                 }
@@ -552,8 +540,8 @@ var S2CellId = /** @class */ (function () {
      * neighbors are guaranteed to be distinct.
      */
     S2CellId.prototype.getEdgeNeighbors = function () {
-        var i = new MutableInteger_1.MutableInteger(0);
-        var j = new MutableInteger_1.MutableInteger(0);
+        var i = new MutableInteger(0);
+        var j = new MutableInteger(0);
         var level = this.level();
         var size = 1 << (S2CellId.MAX_LEVEL - level);
         var face = this.toFaceIJOrientation(i, j, null);
@@ -586,8 +574,8 @@ var S2CellId = /** @class */ (function () {
         // "level" must be strictly less than this cell's level so that we can
         // determine which vertex this cell is closest to.
         // assert (level < this.level());
-        var i = new MutableInteger_1.MutableInteger(0);
-        var j = new MutableInteger_1.MutableInteger(0);
+        var i = new MutableInteger(0);
+        var j = new MutableInteger(0);
         var face = this.toFaceIJOrientation(i, j, null);
         // Determine the i- and j-offsets to the closest neighboring cell in each
         // direction. This involves looking at the next bit of "i" and "j" to
@@ -645,8 +633,8 @@ var S2CellId = /** @class */ (function () {
      * face vertex, the same neighbor may be appended more than once.
      */
     S2CellId.prototype.getAllNeighbors = function (nbrLevel) {
-        var i = new MutableInteger_1.MutableInteger(0);
-        var j = new MutableInteger_1.MutableInteger(0);
+        var i = new MutableInteger(0);
+        var j = new MutableInteger(0);
         var face = this.toFaceIJOrientation(i, j, null);
         // Find the coordinates of the lower left-hand leaf cell. We need to
         // normalize (i,j) to a known position within the cell because nbr_level
@@ -698,8 +686,8 @@ var S2CellId = /** @class */ (function () {
         // rather than local variables helps the compiler to do a better job
         // of register allocation as well. Note that the two 32-bits halves
         // get shifted one bit to the left when they are combined.
-        var faceL = new long_1.default(face);
-        var n = [new long_1.default(0), faceL.shiftLeft(S2CellId.POS_BITS - 33)];
+        var faceL = new Long(face);
+        var n = [new Long(0), faceL.shiftLeft(S2CellId.POS_BITS - 33)];
         // Alternating faces have opposite Hilbert curve orientations; this
         // is necessary in order for all faces to have a right-handed
         // coordinate system.
@@ -719,13 +707,13 @@ var S2CellId = /** @class */ (function () {
             .add(1));
     };
     S2CellId.getBits = function (n, i, j, k, bits) {
-        var mask = new long_1.default(1).shiftLeft(S2CellId.LOOKUP_BITS).sub(1);
-        bits = bits.add(new long_1.default(i)
+        var mask = new Long(1).shiftLeft(S2CellId.LOOKUP_BITS).sub(1);
+        bits = bits.add(new Long(i)
             .shiftRight(k * S2CellId.LOOKUP_BITS)
             .and(mask)
             .shiftLeft(S2CellId.LOOKUP_BITS + 2));
         // bits += (((i >> (k * LOOKUP_BITS)) & mask) << (LOOKUP_BITS + 2));
-        bits = bits.add(new long_1.default(j)
+        bits = bits.add(new Long(j)
             .shiftRight(k * S2CellId.LOOKUP_BITS)
             .and(mask)
             .shiftLeft(2));
@@ -743,8 +731,8 @@ var S2CellId = /** @class */ (function () {
         // Converting from floating-point to integers via static_cast is very slow
         // on Intel processors because it requires changing the rounding mode.
         // Rounding to the nearest integer using FastIntRound() is much faster.
-        var s = S2_1.S2.toDecimal(_s);
-        var m = S2_1.S2.toDecimal(S2CellId.MAX_SIZE).dividedBy(2); // scaling multiplier
+        var s = S2.toDecimal(_s);
+        var m = S2.toDecimal(S2CellId.MAX_SIZE).dividedBy(2); // scaling multiplier
         return decimal.Decimal.max(0, decimal.Decimal.min(m.times(2).minus(1), decimal.Decimal.round(m.times(s).plus(m.minus(0.5))))).toNumber();
         // return Math.max(0,  Math.min(2 * m - 1, Math.round(m * s + (m - 0.5))));
         // return (int) Math.max(0, Math.min(2 * m - 1, Math.round(m * s + (m - 0.5))));
@@ -762,12 +750,12 @@ var S2CellId = /** @class */ (function () {
         j = Math.max(-1, Math.min(S2CellId.MAX_SIZE, j));
         // Find the (s,t) coordinates corresponding to (i,j). At least one
         // of these coordinates will be just outside the range [0, 1].
-        var kScale = S2_1.S2.toDecimal(1.0).dividedBy(S2CellId.MAX_SIZE);
-        var s = kScale.times(new long_1.default(i).shiftLeft(1).add(1).sub(S2CellId.MAX_SIZE).toInt());
-        var t = kScale.times(new long_1.default(j).shiftLeft(1).add(1).sub(S2CellId.MAX_SIZE).toInt());
+        var kScale = S2.toDecimal(1.0).dividedBy(S2CellId.MAX_SIZE);
+        var s = kScale.times(new Long(i).shiftLeft(1).add(1).sub(S2CellId.MAX_SIZE).toInt());
+        var t = kScale.times(new Long(j).shiftLeft(1).add(1).sub(S2CellId.MAX_SIZE).toInt());
         // Find the leaf cell coordinates on the adjacent face, and convert
         // them to a cell id at the appropriate level.
-        var p = new R2Vector_1.R2Vector(s, t).toPoint(face);
+        var p = new R2Vector(s, t).toPoint(face);
         face = p.toFace();
         // face = S2Projections.xyzToFace(p);
         var st = p.toR2Vector(face);
@@ -833,7 +821,7 @@ var S2CellId = /** @class */ (function () {
         if (_id instanceof S2CellId) {
             id = _id;
         }
-        else if (_id instanceof long_1.default) {
+        else if (_id instanceof Long) {
             id = new S2CellId(_id);
         }
         var high = ids.length - 1;
@@ -870,7 +858,7 @@ var S2CellId = /** @class */ (function () {
     S2CellId.MAX_SIZE = 1 << S2CellId.MAX_LEVEL;
     //
     // calculated as 0xffffffffffffffff / radix
-    S2CellId.maxValueDivs = [new long_1.default(0), new long_1.default(0),
+    S2CellId.maxValueDivs = [new Long(0), new Long(0),
         parseHex('9223372036854775807'), parseHex('6148914691236517205'), parseHex('4611686018427387903'),
         parseHex('3689348814741910323'), parseHex('3074457345618258602'), parseHex('2635249153387078802'),
         parseHex('2305843009213693951'), parseHex('2049638230412172401'), parseHex('1844674407370955161'),
@@ -891,7 +879,7 @@ var S2CellId = /** @class */ (function () {
     // '18446744073709551615'
     // Long.fromString('0xffffffffffffffff', true, 16).toString()
     // new Decimal(2).pow(64).sub(1);
-    S2CellId.MAX_UNSIGNED = long_1.default.fromString('0xffffffffffffffff', true, 16);
+    S2CellId.MAX_UNSIGNED = Long.fromString('0xffffffffffffffff', true, 16);
     // The following lookup tables are used to convert efficiently between an
     // (i,j) cell index and the corresponding position along the Hilbert curve.
     // "lookup_pos" maps 4 bits of "i", 4 bits of "j", and 2 bits representing the
@@ -921,10 +909,10 @@ var S2CellId = /** @class */ (function () {
      * This is the offset required to wrap around from the beginning of the
      * Hilbert curve to the end or vice versa; see next_wrap() and prev_wrap().
      */
-    S2CellId.WRAP_OFFSET = new long_1.default(S2CellId.NUM_FACES).shiftLeft(S2CellId.POS_BITS);
+    S2CellId.WRAP_OFFSET = new Long(S2CellId.NUM_FACES).shiftLeft(S2CellId.POS_BITS);
     return S2CellId;
 }());
-exports.S2CellId = S2CellId;
+export { S2CellId };
 function initLookupCell(level, i, j, origOrientation, pos, orientation) {
     if (level == S2CellId.LOOKUP_BITS) {
         var ij = (i << S2CellId.LOOKUP_BITS) + j;
@@ -939,14 +927,14 @@ function initLookupCell(level, i, j, origOrientation, pos, orientation) {
         pos = pos.shiftLeft(2);
         // Initialize each sub-cell recursively.
         for (var subPos = 0; subPos < 4; subPos++) {
-            var ij = S2_1.S2.POS_TO_IJ[orientation][subPos];
-            var orientationMask = S2_1.S2.POS_TO_ORIENTATION[subPos];
+            var ij = S2.POS_TO_IJ[orientation][subPos];
+            var orientationMask = S2.POS_TO_ORIENTATION[subPos];
             initLookupCell(level, i + (ij >>> 1), j + (ij & 1), origOrientation, pos.add(subPos), orientation ^ orientationMask);
         }
     }
 }
-initLookupCell(0, 0, 0, 0, new long_1.default(0), 0);
-initLookupCell(0, 0, 0, S2_1.S2.SWAP_MASK, new long_1.default(0), S2_1.S2.SWAP_MASK);
-initLookupCell(0, 0, 0, S2_1.S2.INVERT_MASK, new long_1.default(0), S2_1.S2.INVERT_MASK);
-initLookupCell(0, 0, 0, S2_1.S2.SWAP_MASK | S2_1.S2.INVERT_MASK, new long_1.default(0), S2_1.S2.SWAP_MASK | S2_1.S2.INVERT_MASK);
+initLookupCell(0, 0, 0, 0, new Long(0), 0);
+initLookupCell(0, 0, 0, S2.SWAP_MASK, new Long(0), S2.SWAP_MASK);
+initLookupCell(0, 0, 0, S2.INVERT_MASK, new Long(0), S2.INVERT_MASK);
+initLookupCell(0, 0, 0, S2.SWAP_MASK | S2.INVERT_MASK, new Long(0), S2.SWAP_MASK | S2.INVERT_MASK);
 //# sourceMappingURL=S2CellId.js.map

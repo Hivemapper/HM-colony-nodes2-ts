@@ -1,4 +1,3 @@
-"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9,17 +8,9 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-var Interval_1 = require("./Interval");
-var S2_1 = require("./S2");
-var decimal = __importStar(require("decimal.js"));
+import { Interval } from "./Interval";
+import { S2 } from "./S2";
+import * as decimal from 'decimal.js';
 /**
  * An R1Interval represents a closed interval on a unit circle (also known as a
  * 1-dimensional sphere). It is capable of representing the empty interval
@@ -55,12 +46,12 @@ var R1Interval = /** @class */ (function (_super) {
         return this.hi.minus(this.lo);
     };
     R1Interval.prototype.contains = function (_p) {
-        var p = S2_1.S2.toDecimal(_p);
+        var p = S2.toDecimal(_p);
         return p.gte(this.lo) && p.lte(this.hi);
     };
     /** Return true if the interior of the interval contains the point 'p'. */
     R1Interval.prototype.interiorContains = function (_p) {
-        var p = S2_1.S2.toDecimal(_p);
+        var p = S2.toDecimal(_p);
         return p.gt(this.lo) && p.lt(this.hi);
     };
     /**
@@ -100,7 +91,7 @@ var R1Interval = /** @class */ (function (_super) {
     };
     /** Expand the interval so that it contains the given point "p". */
     R1Interval.prototype.addPoint = function (_p) {
-        var p = S2_1.S2.toDecimal(_p);
+        var p = S2.toDecimal(_p);
         if (this.isEmpty()) {
             return R1Interval.fromPoint(p);
         }
@@ -120,7 +111,7 @@ var R1Interval = /** @class */ (function (_super) {
      * always empty.
      */
     R1Interval.prototype.expanded = function (_radius) {
-        var radius = S2_1.S2.toDecimal(_radius);
+        var radius = S2.toDecimal(_radius);
         // assert (radius >= 0);
         if (this.isEmpty()) {
             return this;
@@ -175,8 +166,8 @@ var R1Interval = /** @class */ (function (_super) {
      * calling AddPoint() twice, but it is more efficient.
      */
     R1Interval.fromPointPair = function (_p1, _p2) {
-        var p1 = S2_1.S2.toDecimal(_p1);
-        var p2 = S2_1.S2.toDecimal(_p2);
+        var p1 = S2.toDecimal(_p1);
+        var p2 = S2.toDecimal(_p2);
         if (p1.lte(p2)) {
             return new R1Interval(p1, p2);
         }
@@ -185,6 +176,6 @@ var R1Interval = /** @class */ (function (_super) {
         }
     };
     return R1Interval;
-}(Interval_1.Interval));
-exports.R1Interval = R1Interval;
+}(Interval));
+export { R1Interval };
 //# sourceMappingURL=R1Interval.js.map

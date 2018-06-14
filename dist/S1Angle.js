@@ -1,20 +1,11 @@
-"use strict";
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-var decimal = __importStar(require("decimal.js"));
-var S2_1 = require("./S2");
+import * as decimal from 'decimal.js';
+import { S2 } from "./S2";
 var S1Angle = /** @class */ (function () {
     function S1Angle(radians) {
         this.radians = new decimal.Decimal(radians);
     }
     S1Angle.prototype.degrees = function () {
-        return S2_1.S2.toDecimal(this.radians).times((180 / Math.PI));
+        return S2.toDecimal(this.radians).times((180 / Math.PI));
     };
     //
     // public long e5() {
@@ -85,5 +76,5 @@ var S1Angle = /** @class */ (function () {
     };
     return S1Angle;
 }());
-exports.S1Angle = S1Angle;
+export { S1Angle };
 //# sourceMappingURL=S1Angle.js.map

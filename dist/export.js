@@ -1,28 +1,23 @@
-"use strict";
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-var S2Cap_1 = require("./S2Cap");
-__export(require("./Interval"));
-__export(require("./MutableInteger"));
-__export(require("./R1Interval"));
-__export(require("./R2Vector"));
-__export(require("./S1Angle"));
-__export(require("./S1Interval"));
-__export(require("./S2"));
-__export(require("./S2Cap"));
-__export(require("./S2Cell"));
-__export(require("./S2CellId"));
-__export(require("./S2CellUnion"));
+import { S2Cap } from "./S2Cap";
+export * from './Interval';
+export * from './MutableInteger';
+export * from './R1Interval';
+export * from './R2Vector';
+export * from './S1Angle';
+export * from './S1Interval';
+export * from './S2';
+export * from './S2Cap';
+export * from './S2Cell';
+export * from './S2CellId';
+export * from './S2CellUnion';
 // export * from './S2EdgeIndex';
 // export * from './S2EdgeUtil';
-__export(require("./S2LatLng"));
-__export(require("./S2LatLngRect"));
+export * from './S2LatLng';
+export * from './S2LatLngRect';
 // export * from './S2Loop';
-__export(require("./S2Point"));
-__export(require("./S2Projections"));
-__export(require("./S2RegionCoverer"));
+export * from './S2Point';
+export * from './S2Projections';
+export * from './S2RegionCoverer';
 var Utils = /** @class */ (function () {
     function Utils() {
     }
@@ -37,7 +32,7 @@ var Utils = /** @class */ (function () {
     Utils.calcRegionFromCenterRadius = function (center, radiusInKM, points) {
         if (points === void 0) { points = 16; }
         var pointsAtDistance = center.pointsAtDistance(radiusInKM, points);
-        var s2Cap = S2Cap_1.S2Cap.empty().addPoint(center.toPoint());
+        var s2Cap = S2Cap.empty().addPoint(center.toPoint());
         // It would be probably enough to add one of the points/2 pair of opposite points in the circle such
         // as (0, points/2). but since this is just a temporary solution lets stick with this as it
         // will come handy when implementing S2Loop.
@@ -50,5 +45,5 @@ var Utils = /** @class */ (function () {
     };
     return Utils;
 }());
-exports.Utils = Utils;
+export { Utils };
 //# sourceMappingURL=export.js.map

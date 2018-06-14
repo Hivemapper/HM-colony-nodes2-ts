@@ -1,4 +1,3 @@
-"use strict";
 /*
  * Copyright 2005 Google Inc.
  *
@@ -14,18 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-var S1Angle_1 = require("./S1Angle");
-var S2Point_1 = require("./S2Point");
-var S2_1 = require("./S2");
-var decimal = __importStar(require("decimal.js"));
+import { S1Angle } from "./S1Angle";
+import { S2Point } from "./S2Point";
+import { S2 } from "./S2";
+import * as decimal from 'decimal.js';
 /**
  * This class represents a point on the unit sphere as a pair of
  * latitude-longitude coordinates. Like the rest of the "geometry" package, the
@@ -36,19 +27,19 @@ var decimal = __importStar(require("decimal.js"));
  */
 var S2LatLng = /** @class */ (function () {
     function S2LatLng(latRadians, lngRadians) {
-        this.latRadians = S2_1.S2.toDecimal(latRadians);
-        this.lngRadians = S2_1.S2.toDecimal(lngRadians);
+        this.latRadians = S2.toDecimal(latRadians);
+        this.lngRadians = S2.toDecimal(lngRadians);
     }
     Object.defineProperty(S2LatLng.prototype, "latDegrees", {
         get: function () {
-            return new S1Angle_1.S1Angle(this.latRadians).degrees();
+            return new S1Angle(this.latRadians).degrees();
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(S2LatLng.prototype, "lngDegrees", {
         get: function () {
-            return new S1Angle_1.S1Angle(this.lngRadians).degrees();
+            return new S1Angle(this.lngRadians).degrees();
         },
         enumerable: true,
         configurable: true
@@ -61,7 +52,7 @@ var S2LatLng = /** @class */ (function () {
         var phi = this.latRadians;
         var theta = this.lngRadians;
         var cosphi = decimal.Decimal.cos(phi);
-        return new S2Point_1.S2Point(decimal.Decimal.cos(theta).times(cosphi), decimal.Decimal.sin(theta).times(cosphi), decimal.Decimal.sin(phi));
+        return new S2Point(decimal.Decimal.cos(theta).times(cosphi), decimal.Decimal.sin(theta).times(cosphi), decimal.Decimal.sin(phi));
     };
     /**
      * Returns a new S2LatLng based on this instance for which {@link #isValid()}
@@ -76,12 +67,12 @@ var S2LatLng = /** @class */ (function () {
     S2LatLng.prototype.normalized = function () {
         // drem(x, 2 * S2.M_PI) reduces its argument to the range
         // [-S2.M_PI, S2.M_PI] inclusive, which is what we want here.
-        return new S2LatLng(decimal.Decimal.max(-S2_1.S2.M_PI_2, decimal.Decimal.min(S2_1.S2.M_PI_2, this.latRadians)), S2_1.S2.IEEEremainder(this.lngRadians, S2_1.S2.toDecimal(2).times(S2_1.S2.M_PI)));
+        return new S2LatLng(decimal.Decimal.max(-S2.M_PI_2, decimal.Decimal.min(S2.M_PI_2, this.latRadians)), S2.IEEEremainder(this.lngRadians, S2.toDecimal(2).times(S2.M_PI)));
         // return new S2LatLng(Math.max(-S2.M_PI_2, Math.min(S2.M_PI_2, this.latRadians)),
         //     S2.IEEEremainder(this.lngRadians, 2 * S2.M_PI));
     };
     S2LatLng.fromDegrees = function (latDegrees, lngDegrees) {
-        return new S2LatLng(S1Angle_1.S1Angle.degrees(latDegrees).radians, S1Angle_1.S1Angle.degrees(lngDegrees).radians);
+        return new S2LatLng(S1Angle.degrees(latDegrees).radians, S1Angle.degrees(lngDegrees).radians);
     };
     S2LatLng.fromPoint = function (p) {
         return new S2LatLng(S2LatLng.latitude(p).radians, S2LatLng.longitude(p).radians);
@@ -91,8 +82,8 @@ var S2LatLng = /** @class */ (function () {
      * longitude is between -180 and 180 degrees inclusive.
      */
     S2LatLng.prototype.isValid = function () {
-        return this.latRadians.abs().lte(S2_1.S2.M_PI_2) &&
-            this.lngRadians.abs().lte(S2_1.S2.M_PI);
+        return this.latRadians.abs().lte(S2.M_PI_2) &&
+            this.lngRadians.abs().lte(S2.M_PI);
     };
     /**
      * Scales this point by the given scaling factor.
@@ -104,7 +95,7 @@ var S2LatLng = /** @class */ (function () {
     S2LatLng.latitude = function (p) {
         // We use atan2 rather than asin because the input vector is not necessarily
         // unit length, and atan2 is much more accurate than asin near the poles.
-        return new S1Angle_1.S1Angle(decimal.Decimal.atan2(p.z, p.x.pow(2)
+        return new S1Angle(decimal.Decimal.atan2(p.z, p.x.pow(2)
             .plus(p.y.pow(2))
             .sqrt())
         // Math.atan2(p.z, Math.sqrt(p.x * p.x + p.y * p.y))
@@ -112,15 +103,15 @@ var S2LatLng = /** @class */ (function () {
     };
     S2LatLng.longitude = function (p) {
         // Note that atan2(0, 0) is defined to be zero.
-        return new S1Angle_1.S1Angle(decimal.Decimal.atan2(p.y, p.x));
+        return new S1Angle(decimal.Decimal.atan2(p.y, p.x));
     };
     S2LatLng.prototype.equals = function (other) {
         return other.latRadians === this.latRadians && other.lngRadians === this.lngRadians;
     };
     S2LatLng.prototype.pointAtDistance = function (_distanceInKm, _bearingRadians) {
-        var distanceInM = S2_1.S2.toDecimal(_distanceInKm).times(1000);
+        var distanceInM = S2.toDecimal(_distanceInKm).times(1000);
         var distanceToRadius = distanceInM.dividedBy(S2LatLng.EARTH_RADIUS_METERS);
-        var bearingRadians = S2_1.S2.toDecimal(_bearingRadians);
+        var bearingRadians = S2.toDecimal(_bearingRadians);
         this.latRadians.sin();
         distanceToRadius.cos();
         var newLat = this.latRadians.sin()
@@ -147,9 +138,9 @@ var S2LatLng = /** @class */ (function () {
         if (nPoints === void 0) { nPoints = 4; }
         return Array.apply(null, new Array(nPoints)) // create an array filled of undefined!
             .map(function (p, idx) {
-            return S2_1.S2.toDecimal(360).dividedBy(nPoints).times(idx);
+            return S2.toDecimal(360).dividedBy(nPoints).times(idx);
         })
-            .map(function (bearingDegree) { return S1Angle_1.S1Angle.degrees(bearingDegree).radians; })
+            .map(function (bearingDegree) { return S1Angle.degrees(bearingDegree).radians; })
             .map(function (bearingRadians) { return _this.pointAtDistance(_distanceInKm, bearingRadians); });
     };
     S2LatLng.prototype.getEarthDistance = function (other) {
@@ -172,7 +163,7 @@ var S2LatLng = /** @class */ (function () {
             .times(this.latRadians.cos())
             .times(other.latRadians.cos()));
         // double x = dlat * dlat + dlng * dlng * Math.cos(lat1) * Math.cos(lat2);
-        return new S1Angle_1.S1Angle(S2_1.S2.toDecimal(2)
+        return new S1Angle(S2.toDecimal(2)
             .times(decimal.Decimal.atan2(x.sqrt(), decimal.Decimal.max(0, x.neg().plus(1))
             .sqrt())));
         // Return the distance (measured along the surface of the sphere) to the
@@ -206,5 +197,5 @@ var S2LatLng = /** @class */ (function () {
     S2LatLng.CENTER = new S2LatLng(0.0, 0.0);
     return S2LatLng;
 }());
-exports.S2LatLng = S2LatLng;
+export { S2LatLng };
 //# sourceMappingURL=S2LatLng.js.map

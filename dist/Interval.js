@@ -1,10 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var S2_1 = require("./S2");
+import { S2 } from "./S2";
 var Interval = /** @class */ (function () {
     function Interval(lo, hi) {
-        this.lo = S2_1.S2.toDecimal(lo);
-        this.hi = S2_1.S2.toDecimal(hi);
+        this.lo = S2.toDecimal(lo);
+        this.hi = S2.toDecimal(hi);
     }
     Interval.prototype.toString = function () {
         return "[" + this.lo.toString() + ", " + this.hi.toString() + "]";
@@ -20,5 +18,5 @@ var Interval = /** @class */ (function () {
     };
     return Interval;
 }());
-exports.Interval = Interval;
+export { Interval };
 //# sourceMappingURL=Interval.js.map

@@ -1,4 +1,3 @@
-"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9,20 +8,19 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Interval_1 = require("./Interval");
-var S2_1 = require("./S2");
+import { Interval } from "./Interval";
+import { S2 } from "./S2";
 var S1Interval = /** @class */ (function (_super) {
     __extends(S1Interval, _super);
     function S1Interval(lo, hi, checked) {
         if (checked === void 0) { checked = false; }
         var _this = _super.call(this, lo, hi) || this;
         if (!checked) {
-            if (_this.lo.eq(-S2_1.S2.M_PI) && !_this.hi.eq(S2_1.S2.M_PI)) {
-                _this.lo = S2_1.S2.toDecimal(S2_1.S2.M_PI);
+            if (_this.lo.eq(-S2.M_PI) && !_this.hi.eq(S2.M_PI)) {
+                _this.lo = S2.toDecimal(S2.M_PI);
             }
-            if (_this.hi.eq(-S2_1.S2.M_PI) && !_this.lo.eq(S2_1.S2.M_PI)) {
-                _this.hi = S2_1.S2.toDecimal(S2_1.S2.M_PI);
+            if (_this.hi.eq(-S2.M_PI) && !_this.lo.eq(S2.M_PI)) {
+                _this.hi = S2.toDecimal(S2.M_PI);
             }
         }
         return _this;
@@ -32,20 +30,20 @@ var S1Interval = /** @class */ (function (_super) {
      * value -Pi appears only in the Empty() and Full() intervals.
      */
     S1Interval.prototype.isValid = function () {
-        return this.lo.abs().lte(S2_1.S2.M_PI) && this.hi.abs().lte(S2_1.S2.M_PI)
-            && !(this.lo.eq(-S2_1.S2.M_PI) && !this.hi.eq(S2_1.S2.M_PI))
-            && !(this.hi.eq(-S2_1.S2.M_PI) && !this.lo.eq(S2_1.S2.M_PI));
+        return this.lo.abs().lte(S2.M_PI) && this.hi.abs().lte(S2.M_PI)
+            && !(this.lo.eq(-S2.M_PI) && !this.hi.eq(S2.M_PI))
+            && !(this.hi.eq(-S2.M_PI) && !this.lo.eq(S2.M_PI));
         // return (Math.abs(this.lo) <= S2.M_PI && Math.abs(this.hi) <= S2.M_PI
         // && !(this.lo == -S2.M_PI && this.hi != S2.M_PI) && !(this.hi == -S2.M_PI && this.lo != S2.M_PI));
     };
     /** Return true if the interval contains all points on the unit circle. */
     S1Interval.prototype.isFull = function () {
         // console.log(this.hi.minus(this.lo).eq(2 * S2.M_PI));
-        return this.hi.minus(this.lo).eq(2 * S2_1.S2.M_PI);
+        return this.hi.minus(this.lo).eq(2 * S2.M_PI);
     };
     /** Return true if the interval is empty, i.e. it contains no points. */
     S1Interval.prototype.isEmpty = function () {
-        return this.lo.minus(this.hi).eq(2 * S2_1.S2.M_PI);
+        return this.lo.minus(this.hi).eq(2 * S2.M_PI);
     };
     /* Return true if this.lo > this.hi. (This is true for empty intervals.) */
     S1Interval.prototype.isInverted = function () {
@@ -62,7 +60,7 @@ var S1Interval = /** @class */ (function (_super) {
             return center;
         }
         // Return the center in the range (-Pi, Pi].
-        return (center.lte(0)) ? (center.plus(S2_1.S2.M_PI)) : (center.minus(S2_1.S2.M_PI));
+        return (center.lte(0)) ? (center.plus(S2.M_PI)) : (center.minus(S2.M_PI));
     };
     /**
      * Return the length of the interval. The length of an empty interval is
@@ -73,9 +71,9 @@ var S1Interval = /** @class */ (function (_super) {
         if (length.gte(0)) {
             return length;
         }
-        length = length.plus(2 * S2_1.S2.M_PI);
+        length = length.plus(2 * S2.M_PI);
         // Empty intervals have a negative length.
-        return (length.gt(0)) ? length : S2_1.S2.toDecimal(-1);
+        return (length.gt(0)) ? length : S2.toDecimal(-1);
     };
     /**
      * Return the complement of the interior of the interval. An interval and its
@@ -94,11 +92,11 @@ var S1Interval = /** @class */ (function (_super) {
     };
     /** Return true if the interval (which is closed) contains the point 'p'. */
     S1Interval.prototype.contains = function (_p) {
-        var p = S2_1.S2.toDecimal(_p);
+        var p = S2.toDecimal(_p);
         // Works for empty, full, and singleton intervals.
         // assert (Math.abs(p) <= S2.M_PI);
-        if (p.eq(-S2_1.S2.M_PI)) {
-            p = S2_1.S2.toDecimal(S2_1.S2.M_PI);
+        if (p.eq(-S2.M_PI)) {
+            p = S2.toDecimal(S2.M_PI);
         }
         return this.fastContains(p);
     };
@@ -108,7 +106,7 @@ var S1Interval = /** @class */ (function (_super) {
      *
      */
     S1Interval.prototype.fastContains = function (_p) {
-        var p = S2_1.S2.toDecimal(_p);
+        var p = S2.toDecimal(_p);
         if (this.isInverted()) {
             return (p.gte(this.lo) || p.lte(this.hi)) && !this.isEmpty();
         }
@@ -120,9 +118,9 @@ var S1Interval = /** @class */ (function (_super) {
     S1Interval.prototype.interiorContains = function (_p) {
         // Works for empty, full, and singleton intervals.
         // assert (Math.abs(p) <= S2.M_PI);
-        var p = S2_1.S2.toDecimal(_p);
-        if (p.eq(-S2_1.S2.M_PI)) {
-            p = S2_1.S2.toDecimal(S2_1.S2.M_PI);
+        var p = S2.toDecimal(_p);
+        if (p.eq(-S2.M_PI)) {
+            p = S2.toDecimal(S2.M_PI);
         }
         if (this.isInverted()) {
             return p.gt(this.lo) || p.lt(this.hi);
@@ -215,10 +213,10 @@ var S1Interval = /** @class */ (function (_super) {
      * given point "p" (an angle in the range [-Pi, Pi]).
      */
     S1Interval.prototype.addPoint = function (_p) {
-        var p = S2_1.S2.toDecimal(_p);
+        var p = S2.toDecimal(_p);
         // assert (Math.abs(p) <= S2.M_PI);
-        if (p.eq(-S2_1.S2.M_PI)) {
-            p = S2_1.S2.toDecimal(S2_1.S2.M_PI);
+        if (p.eq(-S2.M_PI)) {
+            p = S2.toDecimal(S2.M_PI);
         }
         if (this.fastContains(p)) {
             return new S1Interval(this.lo, this.hi);
@@ -245,21 +243,21 @@ var S1Interval = /** @class */ (function (_super) {
      * always empty. The radius must be non-negative.
      */
     S1Interval.prototype.expanded = function (_radius) {
-        var radius = S2_1.S2.toDecimal(_radius);
+        var radius = S2.toDecimal(_radius);
         // assert (radius >= 0);
         if (this.isEmpty()) {
             return this;
         }
         // Check whether this interval will be full after expansion, allowing
         // for a 1-bit rounding error when computing each endpoint.
-        if (this.getLength().plus(radius.times(2)).gte(2 * S2_1.S2.M_PI - 1e-15)) {
+        if (this.getLength().plus(radius.times(2)).gte(2 * S2.M_PI - 1e-15)) {
             return S1Interval.full();
         }
         // NOTE(dbeaumont): Should this remainder be 2 * M_PI or just M_PI ??
-        var lo = S2_1.S2.IEEEremainder(this.lo.minus(radius), 2 * S2_1.S2.M_PI);
-        var hi = S2_1.S2.IEEEremainder(this.hi.plus(radius), 2 * S2_1.S2.M_PI);
-        if (lo.eq(-S2_1.S2.M_PI)) {
-            lo = S2_1.S2.toDecimal(S2_1.S2.M_PI);
+        var lo = S2.IEEEremainder(this.lo.minus(radius), 2 * S2.M_PI);
+        var hi = S2.IEEEremainder(this.hi.plus(radius), 2 * S2.M_PI);
+        if (lo.eq(-S2.M_PI)) {
+            lo = S2.toDecimal(S2.M_PI);
         }
         return new S1Interval(lo, hi);
     };
@@ -350,20 +348,20 @@ var S1Interval = /** @class */ (function (_super) {
         if (y.isEmpty()) {
             return this.getLength().lte(maxError);
         }
-        return S2_1.S2.IEEEremainder(y.lo.minus(this.lo), 2 * S2_1.S2.M_PI).abs()
-            .plus(S2_1.S2.IEEEremainder(y.hi.minus(this.hi), 2 * S2_1.S2.M_PI).abs())
+        return S2.IEEEremainder(y.lo.minus(this.lo), 2 * S2.M_PI).abs()
+            .plus(S2.IEEEremainder(y.hi.minus(this.hi), 2 * S2.M_PI).abs())
             .lte(maxError);
     };
     S1Interval.empty = function () {
-        return new S1Interval(S2_1.S2.M_PI, -S2_1.S2.M_PI, true);
+        return new S1Interval(S2.M_PI, -S2.M_PI, true);
     };
     S1Interval.full = function () {
-        return new S1Interval(-S2_1.S2.M_PI, S2_1.S2.M_PI, true);
+        return new S1Interval(-S2.M_PI, S2.M_PI, true);
     };
     S1Interval.fromPoint = function (_p) {
-        var p = S2_1.S2.toDecimal(_p);
-        if (p.eq(-S2_1.S2.M_PI)) {
-            p = S2_1.S2.toDecimal(S2_1.S2.M_PI);
+        var p = S2.toDecimal(_p);
+        if (p.eq(-S2.M_PI)) {
+            p = S2.toDecimal(S2.M_PI);
         }
         return new S1Interval(p, p, true);
     };
@@ -374,15 +372,15 @@ var S1Interval = /** @class */ (function (_super) {
      */
     S1Interval.fromPointPair = function (_p1, _p2) {
         // assert (Math.abs(p1) <= S2.M_PI && Math.abs(p2) <= S2.M_PI);
-        var p1 = S2_1.S2.toDecimal(_p1);
-        var p2 = S2_1.S2.toDecimal(_p2);
-        if (p1.eq(-S2_1.S2.M_PI)) {
-            p1 = S2_1.S2.toDecimal(S2_1.S2.M_PI);
+        var p1 = S2.toDecimal(_p1);
+        var p2 = S2.toDecimal(_p2);
+        if (p1.eq(-S2.M_PI)) {
+            p1 = S2.toDecimal(S2.M_PI);
         }
-        if (p2.eq(-S2_1.S2.M_PI)) {
-            p2 = S2_1.S2.toDecimal(S2_1.S2.M_PI);
+        if (p2.eq(-S2.M_PI)) {
+            p2 = S2.toDecimal(S2.M_PI);
         }
-        if (S1Interval.positiveDistance(p1, p2).lte(S2_1.S2.M_PI)) {
+        if (S1Interval.positiveDistance(p1, p2).lte(S2.M_PI)) {
             return new S1Interval(p1, p2, true);
         }
         else {
@@ -396,17 +394,17 @@ var S1Interval = /** @class */ (function (_super) {
      * positive distances).
      */
     S1Interval.positiveDistance = function (_a, _b) {
-        var a = S2_1.S2.toDecimal(_a);
-        var b = S2_1.S2.toDecimal(_b);
+        var a = S2.toDecimal(_a);
+        var b = S2.toDecimal(_b);
         var d = b.minus(a);
         if (d.gte(0)) {
             return d;
         }
         // We want to ensure that if b == Pi and a == (-Pi + eps),
         // the return result is approximately 2*Pi and not zero.
-        return b.plus(S2_1.S2.M_PI).minus(a.minus(S2_1.S2.M_PI));
+        return b.plus(S2.M_PI).minus(a.minus(S2.M_PI));
     };
     return S1Interval;
-}(Interval_1.Interval));
-exports.S1Interval = S1Interval;
+}(Interval));
+export { S1Interval };
 //# sourceMappingURL=S1Interval.js.map

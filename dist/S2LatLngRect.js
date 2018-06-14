@@ -1,40 +1,31 @@
-"use strict";
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-var S1Interval_1 = require("./S1Interval");
-var R1Interval_1 = require("./R1Interval");
-var S2LatLng_1 = require("./S2LatLng");
-var S2_1 = require("./S2");
-var S2Point_1 = require("./S2Point");
-var S1Angle_1 = require("./S1Angle");
-var S2EdgeUtil_1 = require("./S2EdgeUtil");
-var S2Cap_1 = require("./S2Cap");
-var decimal = __importStar(require("decimal.js"));
+import { S1Interval } from "./S1Interval";
+import { R1Interval } from "./R1Interval";
+import { S2LatLng } from "./S2LatLng";
+import { S2 } from "./S2";
+import { S2Point } from "./S2Point";
+import { S1Angle } from "./S1Angle";
+import { S2EdgeUtil } from "./S2EdgeUtil";
+import { S2Cap } from "./S2Cap";
+import * as decimal from 'decimal.js';
 var S2LatLngRect = /** @class */ (function () {
     function S2LatLngRect(lat, lng) {
         this.lat = lat;
         this.lng = lng;
     }
     S2LatLngRect.fromLatLng = function (lo, hi) {
-        return new S2LatLngRect(new R1Interval_1.R1Interval(lo.latRadians, hi.latRadians), new S1Interval_1.S1Interval(lo.lngRadians, hi.lngRadians));
+        return new S2LatLngRect(new R1Interval(lo.latRadians, hi.latRadians), new S1Interval(lo.lngRadians, hi.lngRadians));
     };
     /** The canonical empty rectangle */
     S2LatLngRect.empty = function () {
-        return new S2LatLngRect(R1Interval_1.R1Interval.empty(), S1Interval_1.S1Interval.empty());
+        return new S2LatLngRect(R1Interval.empty(), S1Interval.empty());
     };
     /** The canonical full rectangle. */
     S2LatLngRect.full = function () {
-        return new S2LatLngRect(S2LatLngRect.fullLat(), S1Interval_1.S1Interval.full());
+        return new S2LatLngRect(S2LatLngRect.fullLat(), S1Interval.full());
     };
     /** The full allowable range of latitudes. */
     S2LatLngRect.fullLat = function () {
-        return new R1Interval_1.R1Interval(-S2_1.S2.M_PI_2, S2_1.S2.M_PI_2);
+        return new R1Interval(-S2.M_PI_2, S2.M_PI_2);
     };
     /**
      * Construct a rectangle from a center point (in lat-lng space) and size in
@@ -59,8 +50,8 @@ var S2LatLngRect = /** @class */ (function () {
      */
     S2LatLngRect.fromPointPair = function (p1, p2) {
         // assert (p1.isValid() && p2.isValid());
-        return new S2LatLngRect(R1Interval_1.R1Interval.fromPointPair(p1.latRadians, p2
-            .latRadians), S1Interval_1.S1Interval.fromPointPair(p1.lngRadians, p2.lngRadians));
+        return new S2LatLngRect(R1Interval.fromPointPair(p1.latRadians, p2
+            .latRadians), S1Interval.fromPointPair(p1.lngRadians, p2.lngRadians));
     };
     /**
      * Return a latitude-longitude rectangle that contains the edge from "a" to
@@ -69,14 +60,14 @@ var S2LatLngRect = /** @class */ (function () {
      */
     S2LatLngRect.fromEdge = function (a, b) {
         // assert (S2.isUnitLength(a) && S2.isUnitLength(b));
-        var r = S2LatLngRect.fromPointPair(S2LatLng_1.S2LatLng.fromPoint(a), S2LatLng_1.S2LatLng.fromPoint(b));
+        var r = S2LatLngRect.fromPointPair(S2LatLng.fromPoint(a), S2LatLng.fromPoint(b));
         // Check whether the min/max latitude occurs in the edge interior.
         // We find the normal to the plane containing AB, and then a vector "dir" in
         // this plane that also passes through the equator. We use RobustCrossProd
         // to ensure that the edge normal is accurate even when the two points are
         // very close together.
-        var ab = S2_1.S2.robustCrossProd(a, b);
-        var dir = S2Point_1.S2Point.crossProd(ab, new S2Point_1.S2Point(0, 0, 1));
+        var ab = S2.robustCrossProd(a, b);
+        var dir = S2Point.crossProd(ab, new S2Point(0, 0, 1));
         var da = dir.dotProd(a);
         var db = dir.dotProd(b);
         if (da.times(db).gte(0)) {
@@ -87,10 +78,10 @@ var S2LatLngRect = /** @class */ (function () {
         // latitude bounds but not the longitude bounds.
         var absLat = decimal.Decimal.acos(ab.z.dividedBy(ab.norm()).abs());
         if (da.lt(0)) {
-            return new S2LatLngRect(new R1Interval_1.R1Interval(r.lat.lo, absLat), r.lng);
+            return new S2LatLngRect(new R1Interval(r.lat.lo, absLat), r.lng);
         }
         else {
-            return new S2LatLngRect(new R1Interval_1.R1Interval(-absLat, r.lat.hi), r.lng);
+            return new S2LatLngRect(new R1Interval(-absLat, r.lat.hi), r.lng);
         }
     };
     /**
@@ -101,14 +92,14 @@ var S2LatLngRect = /** @class */ (function () {
      */
     S2LatLngRect.prototype.isValid = function () {
         // The lat/lng ranges must either be both empty or both non-empty.
-        return (this.lat.lo.abs().lte(S2_1.S2.M_PI_2) && this.lat.hi.abs().lte(S2_1.S2.M_PI_2)
+        return (this.lat.lo.abs().lte(S2.M_PI_2) && this.lat.hi.abs().lte(S2.M_PI_2)
             && this.lng.isValid() && this.lat.isEmpty() == this.lng.isEmpty());
     };
     S2LatLngRect.prototype.lo = function () {
-        return new S2LatLng_1.S2LatLng(this.lat.lo, this.lng.lo);
+        return new S2LatLng(this.lat.lo, this.lng.lo);
     };
     S2LatLngRect.prototype.hi = function () {
-        return new S2LatLng_1.S2LatLng(this.lat.hi, this.lng.hi);
+        return new S2LatLng(this.lat.hi, this.lng.hi);
     };
     /**
      * Return true if the rectangle is empty, i.e. it contains no points at all.
@@ -136,11 +127,11 @@ var S2LatLngRect = /** @class */ (function () {
             case 0:
                 return this.lo();
             case 1:
-                return new S2LatLng_1.S2LatLng(this.lat.lo, this.lng.hi);
+                return new S2LatLng(this.lat.lo, this.lng.hi);
             case 2:
                 return this.hi();
             case 3:
-                return new S2LatLng_1.S2LatLng(this.lat.hi, this.lng.lo);
+                return new S2LatLng(this.lat.hi, this.lng.lo);
             default:
                 throw new Error("Invalid vertex index.");
         }
@@ -150,7 +141,7 @@ var S2LatLngRect = /** @class */ (function () {
      * this is not the center of the region on the sphere).
      */
     S2LatLngRect.prototype.getCenter = function () {
-        return new S2LatLng_1.S2LatLng(this.lat.getCenter(), this.lng.getCenter());
+        return new S2LatLng(this.lat.getCenter(), this.lng.getCenter());
     };
     /**
      * Return the minimum distance (measured along the surface of the sphere)
@@ -168,17 +159,17 @@ var S2LatLngRect = /** @class */ (function () {
             throw new Error('point is not valid');
         }
         if (a.lng.contains(p.lngRadians)) {
-            return new S1Angle_1.S1Angle(decimal.Decimal.max(0.0, decimal.Decimal.max(p.latRadians.minus(a.lat.hi), a.lat.lo.minus(p.latRadians))));
+            return new S1Angle(decimal.Decimal.max(0.0, decimal.Decimal.max(p.latRadians.minus(a.lat.hi), a.lat.lo.minus(p.latRadians))));
         }
-        var interval = new S1Interval_1.S1Interval(a.lng.hi, a.lng.complement().getCenter());
+        var interval = new S1Interval(a.lng.hi, a.lng.complement().getCenter());
         var aLng = a.lng.lo;
         if (interval.contains(p.lngRadians)) {
             aLng = a.lng.hi;
         }
-        var lo = new S2LatLng_1.S2LatLng(a.lat.lo, aLng).toPoint();
-        var hi = new S2LatLng_1.S2LatLng(a.lat.hi, aLng).toPoint();
-        var loCrossHi = new S2LatLng_1.S2LatLng(0, aLng.minus(S2_1.S2.M_PI_2)).normalized().toPoint();
-        return S2EdgeUtil_1.S2EdgeUtil.getDistance(p.toPoint(), lo, hi, loCrossHi);
+        var lo = new S2LatLng(a.lat.lo, aLng).toPoint();
+        var hi = new S2LatLng(a.lat.hi, aLng).toPoint();
+        var loCrossHi = new S2LatLng(0, aLng.minus(S2.M_PI_2)).normalized().toPoint();
+        return S2EdgeUtil.getDistance(p.toPoint(), lo, hi, loCrossHi);
     };
     /**
      * Return the minimum distance (measured along the surface of the sphere) to
@@ -196,7 +187,7 @@ var S2LatLngRect = /** @class */ (function () {
         // First, handle the trivial cases where the longitude intervals overlap.
         if (a.lng.intersects(b.lng)) {
             if (a.lat.intersects(b.lat)) {
-                return new S1Angle_1.S1Angle(0); // Intersection between a and b.
+                return new S1Angle(0); // Intersection between a and b.
             }
             // We found an overlap in the longitude interval, but not in the latitude
             // interval. This means the shortest path travels along some line of
@@ -211,14 +202,14 @@ var S2LatLngRect = /** @class */ (function () {
                 lo = a.lat.hi;
                 hi = b.lat.lo;
             }
-            return new S1Angle_1.S1Angle(hi.radians().minus(lo.radians()));
+            return new S1Angle(hi.radians().minus(lo.radians()));
         }
         // The longitude intervals don't overlap. In this case, the closest points
         // occur somewhere on the pair of longitudinal edges which are nearest in
         // longitude-space.
         var aLng, bLng;
-        var loHi = S1Interval_1.S1Interval.fromPointPair(a.lng.lo, b.lng.hi);
-        var hiLo = S1Interval_1.S1Interval.fromPointPair(a.lng.hi, b.lng.lo);
+        var loHi = S1Interval.fromPointPair(a.lng.lo, b.lng.hi);
+        var hiLo = S1Interval.fromPointPair(a.lng.hi, b.lng.lo);
         if (loHi.getLength().lt(hiLo.getLength())) {
             aLng = a.lng.lo;
             bLng = b.lng.hi;
@@ -232,20 +223,20 @@ var S2LatLngRect = /** @class */ (function () {
         // to a single point-edge distance by comparing the relative latitudes of the
         // endpoints, but for the sake of clarity, we'll do all four point-edge
         // distance tests.
-        var aLo = new S2LatLng_1.S2LatLng(a.lat.lo, aLng).toPoint();
-        var aHi = new S2LatLng_1.S2LatLng(a.lat.hi, aLng).toPoint();
-        var aLoCrossHi = new S2LatLng_1.S2LatLng(0, aLng.radians().minus(S2_1.S2.M_PI_2)).normalized().toPoint();
-        var bLo = new S2LatLng_1.S2LatLng(b.lat.lo, bLng).toPoint();
-        var bHi = new S2LatLng_1.S2LatLng(b.lat.hi, bLng).toPoint();
-        var bLoCrossHi = new S2LatLng_1.S2LatLng(0, bLng.radians().minus(S2_1.S2.M_PI_2)).normalized().toPoint();
-        return S1Angle_1.S1Angle.min(S2EdgeUtil_1.S2EdgeUtil.getDistance(aLo, bLo, bHi, bLoCrossHi), S1Angle_1.S1Angle.min(S2EdgeUtil_1.S2EdgeUtil.getDistance(aHi, bLo, bHi, bLoCrossHi), S1Angle_1.S1Angle.min(S2EdgeUtil_1.S2EdgeUtil.getDistance(bLo, aLo, aHi, aLoCrossHi), S2EdgeUtil_1.S2EdgeUtil.getDistance(bHi, aLo, aHi, aLoCrossHi))));
+        var aLo = new S2LatLng(a.lat.lo, aLng).toPoint();
+        var aHi = new S2LatLng(a.lat.hi, aLng).toPoint();
+        var aLoCrossHi = new S2LatLng(0, aLng.radians().minus(S2.M_PI_2)).normalized().toPoint();
+        var bLo = new S2LatLng(b.lat.lo, bLng).toPoint();
+        var bHi = new S2LatLng(b.lat.hi, bLng).toPoint();
+        var bLoCrossHi = new S2LatLng(0, bLng.radians().minus(S2.M_PI_2)).normalized().toPoint();
+        return S1Angle.min(S2EdgeUtil.getDistance(aLo, bLo, bHi, bLoCrossHi), S1Angle.min(S2EdgeUtil.getDistance(aHi, bLo, bHi, bLoCrossHi), S1Angle.min(S2EdgeUtil.getDistance(bLo, aLo, aHi, aLoCrossHi), S2EdgeUtil.getDistance(bHi, aLo, aHi, aLoCrossHi))));
     };
     /**
      * Return the width and height of this rectangle in latitude-longitude space.
      * Empty rectangles have a negative width and height.
      */
     S2LatLngRect.prototype.getSize = function () {
-        return new S2LatLng_1.S2LatLng(this.lat.getLength(), this.lng.getLength());
+        return new S2LatLng(this.lat.getLength(), this.lng.getLength());
     };
     /**
      * More efficient version of Contains() that accepts a S2LatLng rather than an
@@ -261,7 +252,7 @@ var S2LatLngRect = /** @class */ (function () {
      * need to be normalized.
      */
     S2LatLngRect.prototype.interiorContainsP = function (p) {
-        return this.interiorContainsLL(S2LatLng_1.S2LatLng.fromPoint(p));
+        return this.interiorContainsLL(S2LatLng.fromPoint(p));
     };
     /**
      * More efficient version of InteriorContains() that accepts a S2LatLng rather
@@ -321,13 +312,13 @@ var S2LatLngRect = /** @class */ (function () {
         var cellLl = new Array(4);
         for (var i = 0; i < 4; ++i) {
             cellV[i] = cell.getVertex(i); // Must be normalized.
-            cellLl[i] = S2LatLng_1.S2LatLng.fromPoint(cellV[i]);
+            cellLl[i] = S2LatLng.fromPoint(cellV[i]);
             if (this.containsLL(cellLl[i])) {
                 return true; // Quick acceptance test.
             }
         }
         for (var i = 0; i < 4; ++i) {
-            var edgeLng = S1Interval_1.S1Interval.fromPointPair(cellLl[i].lngRadians, cellLl[(i + 1) & 3].lngRadians);
+            var edgeLng = S1Interval.fromPointPair(cellLl[i].lngRadians, cellLl[(i + 1) & 3].lngRadians);
             if (!this.lng.intersects(edgeLng)) {
                 continue;
             }
@@ -361,7 +352,7 @@ var S2LatLngRect = /** @class */ (function () {
             .interiorIntersects(other.lng));
     };
     S2LatLngRect.prototype.addPoint = function (p) {
-        return this.addPointLL(S2LatLng_1.S2LatLng.fromPoint(p));
+        return this.addPointLL(S2LatLng.fromPoint(p));
     };
     // Increase the size of the bounding rectangle to include the given point.
     // The rectangle is expanded by the minimum amount possible.
@@ -439,7 +430,7 @@ var S2LatLngRect = /** @class */ (function () {
     /** Return the surface area of this rectangle on the unit sphere. */
     S2LatLngRect.prototype.area = function () {
         if (this.isEmpty()) {
-            return S2_1.S2.toDecimal(0);
+            return S2.toDecimal(0);
         }
         // This is the size difference of the two spherical caps, multiplied by
         // the longitude ratio.
@@ -472,27 +463,27 @@ var S2LatLngRect = /** @class */ (function () {
         // through the center of the lat-long rectangle and one whose axis
         // is the north or south pole. We return the smaller of the two caps.
         if (this.isEmpty()) {
-            return S2Cap_1.S2Cap.empty();
+            return S2Cap.empty();
         }
         var poleZ, poleAngle;
         if (this.lat.lo.plus(this.lat.hi).lt(0)) {
             // South pole axis yields smaller cap.
             poleZ = -1;
-            poleAngle = this.lat.hi.plus(S2_1.S2.M_PI_2);
+            poleAngle = this.lat.hi.plus(S2.M_PI_2);
         }
         else {
             poleZ = 1;
-            poleAngle = this.lat.lo.neg().plus(S2_1.S2.M_PI_2);
+            poleAngle = this.lat.lo.neg().plus(S2.M_PI_2);
         }
-        var poleCap = S2Cap_1.S2Cap.fromAxisAngle(new S2Point_1.S2Point(0, 0, poleZ), new S1Angle_1.S1Angle(poleAngle));
+        var poleCap = S2Cap.fromAxisAngle(new S2Point(0, 0, poleZ), new S1Angle(poleAngle));
         // For bounding rectangles that span 180 degrees or less in longitude, the
         // maximum cap size is achieved at one of the rectangle vertices. For
         // rectangles that are larger than 180 degrees, we punt and always return a
         // bounding cap centered at one of the two poles.
         var lngSpan = this.lng.hi.minus(this.lng.lo);
-        if (S2_1.S2.IEEEremainder(lngSpan, 2 * S2_1.S2.M_PI).gte(0)) {
-            if (lngSpan.lt(2 * S2_1.S2.M_PI)) {
-                var midCap = S2Cap_1.S2Cap.fromAxisAngle(this.getCenter().toPoint(), new S1Angle_1.S1Angle(0));
+        if (S2.IEEEremainder(lngSpan, 2 * S2.M_PI).gte(0)) {
+            if (lngSpan.lt(2 * S2.M_PI)) {
+                var midCap = S2Cap.fromAxisAngle(this.getCenter().toPoint(), new S1Angle(0));
                 for (var k = 0; k < 4; ++k) {
                     midCap = midCap.addPoint(this.getVertex(k).toPoint());
                 }
@@ -524,7 +515,7 @@ var S2LatLngRect = /** @class */ (function () {
     };
     /** The point 'p' does not need to be normalized. */
     S2LatLngRect.prototype.containsP = function (p) {
-        return this.containsLL(S2LatLng_1.S2LatLng.fromPoint(p));
+        return this.containsLL(S2LatLng.fromPoint(p));
     };
     /**
      * Return true if the edge AB intersects the given edge of constant longitude.
@@ -533,8 +524,8 @@ var S2LatLngRect = /** @class */ (function () {
         // Return true if the segment AB intersects the given edge of constant
         // longitude. The nice thing about edges of constant longitude is that
         // they are straight lines on the sphere (geodesics).
-        return S2_1.S2.simpleCrossing(a, b, new S2LatLng_1.S2LatLng(lat.lo, lng)
-            .toPoint(), new S2LatLng_1.S2LatLng(lat.hi, lng).toPoint());
+        return S2.simpleCrossing(a, b, new S2LatLng(lat.lo, lng)
+            .toPoint(), new S2LatLng(lat.hi, lng).toPoint());
     };
     /**
      * Return true if the edge AB intersects the given edge of constant latitude.
@@ -545,14 +536,14 @@ var S2LatLngRect = /** @class */ (function () {
         // the sphere. They can intersect a straight edge in 0, 1, or 2 points.
         // assert (S2.isUnitLength(a) && S2.isUnitLength(b));
         // First, compute the normal to the plane AB that points vaguely north.
-        var z = S2Point_1.S2Point.normalize(S2_1.S2.robustCrossProd(a, b));
+        var z = S2Point.normalize(S2.robustCrossProd(a, b));
         if (z.z.lt(0)) {
-            z = S2Point_1.S2Point.neg(z);
+            z = S2Point.neg(z);
         }
         // Extend this to an orthonormal frame (x,y,z) where x is the direction
         // where the great circle through AB achieves its maximium latitude.
-        var y = S2Point_1.S2Point.normalize(S2_1.S2.robustCrossProd(z, new S2Point_1.S2Point(0, 0, 1)));
-        var x = S2Point_1.S2Point.crossProd(y, z);
+        var y = S2Point.normalize(S2.robustCrossProd(z, new S2Point(0, 0, 1)));
+        var x = S2Point.crossProd(y, z);
         // assert (S2.isUnitLength(x) && x.z >= 0);
         // Compute the angle "theta" from the x-axis (in the x-y plane defined
         // above) where the great circle intersects the given line of latitude.
@@ -570,17 +561,17 @@ var S2LatLngRect = /** @class */ (function () {
         // intersection point is contained in the interior of the edge AB and
         // also that it is contained within the given longitude interval "lng".
         // Compute the range of theta values spanned by the edge AB.
-        var abTheta = S1Interval_1.S1Interval.fromPointPair(decimal.Decimal.atan2(a.dotProd(y), a.dotProd(x)), decimal.Decimal.atan2(b.dotProd(y), b.dotProd(x)));
+        var abTheta = S1Interval.fromPointPair(decimal.Decimal.atan2(a.dotProd(y), a.dotProd(x)), decimal.Decimal.atan2(b.dotProd(y), b.dotProd(x)));
         if (abTheta.contains(theta)) {
             // Check if the intersection point is also in the given "lng" interval.
-            var isect = S2Point_1.S2Point.add(S2Point_1.S2Point.mul(x, cosTheta), S2Point_1.S2Point.mul(y, sinTheta));
+            var isect = S2Point.add(S2Point.mul(x, cosTheta), S2Point.mul(y, sinTheta));
             if (lng.contains(decimal.Decimal.atan2(isect.y, isect.x))) {
                 return true;
             }
         }
         if (abTheta.contains(theta.neg())) {
             // Check if the intersection point is also in the given "lng" interval.
-            var intersection = S2Point_1.S2Point.sub(S2Point_1.S2Point.mul(x, cosTheta), S2Point_1.S2Point.mul(y, sinTheta));
+            var intersection = S2Point.sub(S2Point.mul(x, cosTheta), S2Point.mul(y, sinTheta));
             if (lng.contains(decimal.Decimal.atan2(intersection.y, intersection.x))) {
                 return true;
             }
@@ -610,5 +601,5 @@ var S2LatLngRect = /** @class */ (function () {
     };
     return S2LatLngRect;
 }());
-exports.S2LatLngRect = S2LatLngRect;
+export { S2LatLngRect };
 //# sourceMappingURL=S2LatLngRect.js.map

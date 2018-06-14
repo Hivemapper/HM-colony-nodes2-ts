@@ -1,20 +1,7 @@
-"use strict";
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-}
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-var S2Point_1 = require("./S2Point");
-var decimal = __importStar(require("decimal.js"));
-var S2Metric_1 = require("./S2Metric");
-exports.S2Metric = S2Metric_1.S2Metric;
-var long_1 = __importDefault(require("long"));
+import { S2Point } from "./S2Point";
+import * as decimal from 'decimal.js';
+import { S2Metric } from "./S2Metric";
+import Long from 'long';
 var S2 = /** @class */ (function () {
     function S2() {
     }
@@ -84,8 +71,8 @@ var S2 = /** @class */ (function () {
         // Given that "a" and "b" are unit-length, this has good orthogonality to
         // "a" and "b" even if they differ only in the lowest bit of one component.
         // assert (isUnitLength(a) && isUnitLength(b));
-        var x = S2Point_1.S2Point.crossProd(S2Point_1.S2Point.add(b, a), S2Point_1.S2Point.sub(b, a));
-        if (!x.equals(new S2Point_1.S2Point(0, 0, 0))) {
+        var x = S2Point.crossProd(S2Point.add(b, a), S2Point.sub(b, a));
+        if (!x.equals(new S2Point(0, 0, 0))) {
             return x;
         }
         // The only result that makes sense mathematically is to return zero, but
@@ -169,9 +156,9 @@ var S2 = /** @class */ (function () {
         // This is equivalent to the usual Girard's formula but is slightly
         // more accurate, faster to compute, and handles a == b == c without
         // a special case.
-        var ab = S2Point_1.S2Point.crossProd(a, b);
-        var bc = S2Point_1.S2Point.crossProd(b, c);
-        var ac = S2Point_1.S2Point.crossProd(a, c);
+        var ab = S2Point.crossProd(a, b);
+        var bc = S2Point.crossProd(b, c);
+        var ac = S2Point.crossProd(a, c);
         return decimal.Decimal.max(0, ab.angle(ac)
             .minus(ab.angle(bc))
             .plus(bc.angle(ac)));
@@ -204,7 +191,7 @@ var S2 = /** @class */ (function () {
         //
         // (1) x.CrossProd(y) == -(y.CrossProd(x))
         // (2) (-x).DotProd(y) == -(x.DotProd(y))
-        return S2Point_1.S2Point.crossProd(c, a).dotProd(b).gt(0);
+        return S2Point.crossProd(c, a).dotProd(b).gt(0);
     };
     /**
      *
@@ -221,8 +208,8 @@ var S2 = /** @class */ (function () {
         // restrictive than the corresponding definition for planar edges,
         // since we need to exclude pairs of line segments that would
         // otherwise "intersect" by crossing two antipodal points.
-        var ab = S2Point_1.S2Point.crossProd(a, b);
-        var cd = S2Point_1.S2Point.crossProd(c, d);
+        var ab = S2Point.crossProd(a, b);
+        var cd = S2Point.crossProd(c, d);
         var acb = ab.dotProd(c).neg();
         var cbd = cd.dotProd(b).neg();
         var bda = ab.dotProd(d);
@@ -241,7 +228,7 @@ var S2 = /** @class */ (function () {
     // Number of bits in the mantissa of a double.
     S2.EXPONENT_SHIFT = 52;
     // Mask to extract the exponent from a double.
-    S2.EXPONENT_MASK = long_1.default.fromString('0x7ff0000000000000', true, 16);
+    S2.EXPONENT_MASK = Long.fromString('0x7ff0000000000000', true, 16);
     /** Mapping from cell orientation + Hilbert traversal to IJ-index. */
     S2.POS_TO_ORIENTATION = [S2.SWAP_MASK, 0, 0, S2.INVERT_MASK + S2.SWAP_MASK];
     S2.POS_TO_IJ = [
@@ -252,8 +239,9 @@ var S2 = /** @class */ (function () {
         [3, 1, 0, 2],
     ];
     S2.MAX_LEVEL = 30;
-    S2.Metric = S2Metric_1.S2Metric;
+    S2.Metric = S2Metric;
     return S2;
 }());
-exports.S2 = S2;
+export { S2 };
+export { S2Metric };
 //# sourceMappingURL=S2.js.map

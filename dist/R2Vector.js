@@ -1,15 +1,6 @@
-"use strict";
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-var S2Point_1 = require("./S2Point");
-var decimal = __importStar(require("decimal.js"));
-var S2_1 = require("./S2");
+import { S2Point } from "./S2Point";
+import * as decimal from 'decimal.js';
+import { S2 } from "./S2";
 /**
  * R2Vector represents a vector in the two-dimensional space. It defines the
  * basic geometrical operations for 2D vectors, e.g. cross product, addition,
@@ -103,29 +94,29 @@ var R2Vector = /** @class */ (function () {
     };
     // from S2Projections.stToUV (QUADRATIC)
     R2Vector.singleStTOUV = function (_s) {
-        var s = S2_1.S2.toDecimal(_s);
+        var s = S2.toDecimal(_s);
         if (s.gte(0)) {
-            return S2_1.S2.toDecimal(1)
+            return S2.toDecimal(1)
                 .dividedBy(3)
                 .times(s.plus(1).pow(2).minus(1));
             // return (1 / 3.) * ((1 + s) * (1 + s) - 1);
         }
         else {
-            return S2_1.S2.toDecimal(1)
+            return S2.toDecimal(1)
                 .dividedBy(3)
-                .times(S2_1.S2.toDecimal(1)
-                .minus(S2_1.S2.toDecimal(1).minus(s).pow(2)));
+                .times(S2.toDecimal(1)
+                .minus(S2.toDecimal(1).minus(s).pow(2)));
             // return (1 / 3.) * (1 - (1 - s) * (1 - s));
         }
     };
     R2Vector.singleUVToST = function (_x) {
-        var x = S2_1.S2.toDecimal(_x);
+        var x = S2.toDecimal(_x);
         if (x.gte(0)) {
             return decimal.Decimal.sqrt(x.times(3).plus(1)).minus(1);
         }
         else {
-            return S2_1.S2.toDecimal(1)
-                .minus(decimal.Decimal.sqrt(S2_1.S2.toDecimal(1).minus(x.times(3))));
+            return S2.toDecimal(1)
+                .minus(decimal.Decimal.sqrt(S2.toDecimal(1).minus(x.times(3))));
         }
     };
     /**
@@ -136,17 +127,17 @@ var R2Vector = /** @class */ (function () {
     R2Vector.prototype.toPoint = function (face) {
         switch (face) {
             case 0:
-                return new S2Point_1.S2Point(1, this.x, this.y);
+                return new S2Point(1, this.x, this.y);
             case 1:
-                return new S2Point_1.S2Point(this.x.neg(), 1, this.y);
+                return new S2Point(this.x.neg(), 1, this.y);
             case 2:
-                return new S2Point_1.S2Point(this.x.neg(), this.y.neg(), 1);
+                return new S2Point(this.x.neg(), this.y.neg(), 1);
             case 3:
-                return new S2Point_1.S2Point(-1, this.y.neg(), this.x.neg());
+                return new S2Point(-1, this.y.neg(), this.x.neg());
             case 4:
-                return new S2Point_1.S2Point(this.y, -1, this.x.neg());
+                return new S2Point(this.y, -1, this.x.neg());
             default:
-                return new S2Point_1.S2Point(this.y, this.x, -1);
+                return new S2Point(this.y, this.x, -1);
         }
     };
     R2Vector.prototype.toSt = function (which) {
@@ -157,5 +148,5 @@ var R2Vector = /** @class */ (function () {
     };
     return R2Vector;
 }());
-exports.R2Vector = R2Vector;
+export { R2Vector };
 //# sourceMappingURL=R2Vector.js.map

@@ -1,4 +1,3 @@
-"use strict";
 /*
  * Copyright 2006 Google Inc.
  *
@@ -14,17 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-var R2Vector_1 = require("./R2Vector");
-var decimal = __importStar(require("decimal.js"));
-var S2_1 = require("./S2");
+import { R2Vector } from "./R2Vector";
+import * as decimal from 'decimal.js';
+import { S2 } from "./S2";
 ///re
 /**
  * An S2Point represents a point on the unit sphere as a 3D vector. Usually
@@ -116,7 +107,7 @@ var S2Point = /** @class */ (function () {
     S2Point.normalize = function (p) {
         var norm = p.norm();
         if (!norm.eq(0)) {
-            norm = S2_1.S2.toDecimal(1).dividedBy(norm);
+            norm = S2.toDecimal(1).dividedBy(norm);
         }
         return S2Point.mul(p, norm);
     };
@@ -202,12 +193,12 @@ var S2Point = /** @class */ (function () {
             default:
                 throw new Error('Invalid face');
         }
-        return new R2Vector_1.R2Vector(u, v);
+        return new R2Vector(u, v);
     };
     S2Point.prototype.toString = function () {
         return "Point(" + this.x.toNumber() + ", " + this.y.toNumber() + ", " + this.z.toNumber() + ")";
     };
     return S2Point;
 }());
-exports.S2Point = S2Point;
+export { S2Point };
 //# sourceMappingURL=S2Point.js.map

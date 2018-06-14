@@ -1,4 +1,3 @@
-"use strict";
 /*
  * Copyright 2005 Google Inc.
  *
@@ -14,5 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-Object.defineProperty(exports, "__esModule", { value: true });
 //# sourceMappingURL=S2Region.js.map

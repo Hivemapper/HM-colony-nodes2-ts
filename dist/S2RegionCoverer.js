@@ -1,4 +1,3 @@
-"use strict";
 /*
  * Copyright 2005 Google Inc.
  *
@@ -14,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-var S2Cell_1 = require("./S2Cell");
-var S2CellId_1 = require("./S2CellId");
-var S2CellUnion_1 = require("./S2CellUnion");
-var S2Projections_1 = require("./S2Projections");
-var decimal_js_1 = require("decimal.js");
+import { S2Cell } from "./S2Cell";
+import { S2CellId } from "./S2CellId";
+import { S2CellUnion } from "./S2CellUnion";
+import { S2Projections } from "./S2Projections";
+import { Decimal } from 'decimal.js';
 /**
  * An S2RegionCoverer is a class that allows arbitrary regions to be
  * approximated as unions of cells (S2CellUnion). This is useful for
@@ -57,7 +55,7 @@ var S2RegionCoverer = /** @class */ (function () {
      */
     function S2RegionCoverer() {
         this.minLevel = 0;
-        this.maxLevel = S2CellId_1.S2CellId.MAX_LEVEL;
+        this.maxLevel = S2CellId.MAX_LEVEL;
         this.levelMod = 1;
         this.maxCells = S2RegionCoverer.DEFAULT_MAX_CELLS;
         this.region = null;
@@ -82,7 +80,7 @@ var S2RegionCoverer = /** @class */ (function () {
      */
     S2RegionCoverer.prototype.setMinLevel = function (minLevel) {
         // assert (minLevel >= 0 && minLevel <= S2CellId.MAX_LEVEL);
-        this.minLevel = Math.max(0, Math.min(S2CellId_1.S2CellId.MAX_LEVEL, minLevel));
+        this.minLevel = Math.max(0, Math.min(S2CellId.MAX_LEVEL, minLevel));
         return this;
     };
     /**
@@ -90,7 +88,7 @@ var S2RegionCoverer = /** @class */ (function () {
      */
     S2RegionCoverer.prototype.setMaxLevel = function (maxLevel) {
         // assert (maxLevel >= 0 && maxLevel <= S2CellId.MAX_LEVEL);
-        this.maxLevel = Math.max(0, Math.min(S2CellId_1.S2CellId.MAX_LEVEL, maxLevel));
+        this.maxLevel = Math.max(0, Math.min(S2CellId.MAX_LEVEL, maxLevel));
         return this;
     };
     /**
@@ -177,7 +175,7 @@ var S2RegionCoverer = /** @class */ (function () {
      * constructor does in fact satisfy all the given restrictions.)
      */
     S2RegionCoverer.prototype.getCoveringUnion = function (region, covering) {
-        if (covering === void 0) { covering = new S2CellUnion_1.S2CellUnion(); }
+        if (covering === void 0) { covering = new S2CellUnion(); }
         this.interiorCovering = false;
         this.getCoveringInternal(region);
         covering.initSwap(this.result);
@@ -188,7 +186,7 @@ var S2RegionCoverer = /** @class */ (function () {
      * and satisfies the restrictions *EXCEPT* for min_level() and level_mod().
      */
     S2RegionCoverer.prototype.getInteriorCoveringUnion = function (region, covering) {
-        if (covering === void 0) { covering = new S2CellUnion_1.S2CellUnion(); }
+        if (covering === void 0) { covering = new S2CellUnion(); }
         this.interiorCovering = true;
         this.getCoveringInternal(region);
         covering.initSwap(this.result);
@@ -322,7 +320,7 @@ var S2RegionCoverer = /** @class */ (function () {
             // Find the maximum level such that the bounding cap contains at most one
             // cell vertex at that level.
             var cap = this.region.getCapBound();
-            var level = decimal_js_1.Decimal.min(S2Projections_1.S2Projections.MIN_WIDTH.getMaxLevel(cap.angle().radians.times(2)), decimal_js_1.Decimal.min(this.maxLevel, S2CellId_1.S2CellId.MAX_LEVEL - 1)).toNumber();
+            var level = Decimal.min(S2Projections.MIN_WIDTH.getMaxLevel(cap.angle().radians.times(2)), Decimal.min(this.maxLevel, S2CellId.MAX_LEVEL - 1)).toNumber();
             if (this.levelMod > 1 && level > this.minLevel) {
                 level -= (level - this.minLevel) % this.levelMod;
             }
@@ -332,10 +330,10 @@ var S2RegionCoverer = /** @class */ (function () {
                 // Find the leaf cell containing the cap axis, and determine which
                 // subcell of the parent cell contains it.
                 // ArrayList<S2CellId> base = new ArrayList<>(4);
-                var id = S2CellId_1.S2CellId.fromPoint(cap.axis);
+                var id = S2CellId.fromPoint(cap.axis);
                 var base = id.getVertexNeighbors(level);
                 for (var i = 0; i < base.length; ++i) {
-                    this.addCandidate(this.newCandidate(new S2Cell_1.S2Cell(base[i])));
+                    this.addCandidate(this.newCandidate(new S2Cell(base[i])));
                 }
                 return;
             }
@@ -396,10 +394,10 @@ var S2RegionCoverer = /** @class */ (function () {
      * the approximation (see table below).
      */
     S2RegionCoverer.DEFAULT_MAX_CELLS = 8;
-    S2RegionCoverer.FACE_CELLS = [0, 1, 2, 3, 4, 5].map(function (face) { return S2Cell_1.S2Cell.fromFacePosLevel(face, 0, 0); });
+    S2RegionCoverer.FACE_CELLS = [0, 1, 2, 3, 4, 5].map(function (face) { return S2Cell.fromFacePosLevel(face, 0, 0); });
     return S2RegionCoverer;
 }());
-exports.S2RegionCoverer = S2RegionCoverer;
+export { S2RegionCoverer };
 var Candidate = /** @class */ (function () {
     function Candidate() {
     }
