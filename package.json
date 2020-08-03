@@ -33,7 +33,7 @@
   "license": "MIT",
   "dependencies": {
     "decimal.js": "^10.0.0",
-    "long": "git+ssh://git@github.com/Hivemapper/long.js.git#19bf18cf191f61505d704ac433e13313877c6bd4"
+    "long": "git+https://github.com/Hivemapper/long.js#19bf18cf191f61505d704ac433e13313877c6bd4"
   },
   "devDependencies": {
     "@types/chai": "^3.4.32",
